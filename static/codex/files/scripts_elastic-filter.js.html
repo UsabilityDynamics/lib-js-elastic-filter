@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>scripts/elastic-filter.js - elastic-filter</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="http://a3d72a45d111006ec192-ec5b80a12b0b09b4d52373336afb4254.r80.cf1.rackcdn.com/usability-dynamics.png" title="elastic-filter"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 0.0.1</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: scripts/elastic-filter.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/** =========================================================
+ * elastic_filter.js v0.5
+ * http://usabilitydynamics.com
+ * =========================================================
+ *
+ * Commercial use requires one-time license fee
+ * http://usabilitydynamics.com/licenses
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;..
+ * http://usabilitydynamics.com/warranty
+ *
+ * Copyright 2012-2013 Usability Dynamics, Inc. (usabilitydynamics.com)
+ *
+ * Console Log Commands
+ * ====================
+ * Last Query: elastic_filter.computed_query();
+ *
+ * ========================================================= */
+new (function( args ) {
+
+  // Merge Custom Args into Default Args and then into Self
+  var app = window.ef_app = jQuery.extend( true, this, {
+
+    // Local Settings.
+    &#x27;settings&#x27;: {
+
+      &#x27;account_id&#x27;: undefined,
+
+      &#x27;access_key&#x27;: undefined,
+
+      &#x27;per_page&#x27;: 10,
+
+      &#x27;debug&#x27;: false,
+
+      &#x27;visual_debug&#x27;: false,
+
+      &#x27;url&#x27;: &#x27;https://cloud.usabilitydynamics.com&#x27;,
+
+      &#x27;index&#x27;: &#x27;&#x27;
+
+    },
+
+    // Result Items.
+    &#x27;documents&#x27;: [],
+
+    // Facet Objects.
+    &#x27;facets&#x27;: [],
+
+    // Available Sorting Types
+    &#x27;sort_options&#x27;: [],
+
+    // Defaults from CloudAPI
+    &#x27;defaults&#x27;: null,
+
+    // Overall App State
+    &#x27;state&#x27;: &#x27;loading&#x27;,
+
+    // Query Object
+    &#x27;query&#x27;: {
+
+      // Full Text Search
+      &#x27;full_text&#x27;: null,
+
+      // Single Field Search(es)
+      &#x27;field&#x27;: [],
+
+      // Multiple Term Search(es)
+      &#x27;terms&#x27;: [],
+
+      // Range Search(es)
+      &#x27;range&#x27;: [],
+
+      // Fuzzy Term / Date / Number Search(es)
+      &#x27;fuzzy&#x27;: [],
+
+      // Start Result
+      &#x27;from&#x27;: 0
+
+    },
+
+    &#x27;size&#x27;: 0,
+
+    // Sort Order
+    &#x27;sort&#x27;: null,
+
+    &#x27;bindings_initialized&#x27;: [],
+
+    // Total available results. Integer
+    &#x27;total&#x27;: null,
+
+    // General Status Message. String.
+    &#x27;message&#x27;: &#x27;&#x27;,
+
+    // Set to true once fully loaded
+    &#x27;elastic_ready&#x27;: false,
+
+    // Socket Session ID
+    &#x27;session_id&#x27;: null,
+
+    // Global Variable for Data Storage
+    &#x27;global&#x27;: window.__elastic_filter = {},
+
+    // Initialization Complete
+    &#x27;ready&#x27;: function() {
+    },
+
+    // Required Assets
+    &#x27;_required&#x27;: {
+      &#x27;io&#x27;: &#x27;//ud-cdn.com/js/ud.socket/1.0.0/ud.socket.js&#x27;,
+      &#x27;ko.mapping&#x27;: &#x27;//ud-cdn.com/js/knockout.mapping/2.3.2/knockout.mapping.js&#x27;,
+      &#x27;async&#x27;: &#x27;//ud-cdn.com/js/async/1.0/async.js&#x27;,
+      &#x27;ud.ko&#x27;: &#x27;//ud-cdn.com/js/knockout.ud/1.0/knockout.ud.js&#x27;,
+      &#x27;ud.select&#x27;: &#x27;//ud-cdn.com/js/ud.select/3.2/ud.select.js&#x27;,
+      &#x27;jq-lazyload&#x27;: &#x27;//ud-cdn.com/js/jquery.lazyload/1.8.2/jquery.lazyload.js&#x27;
+    },
+
+    // Application Event Log
+    &#x27;_log&#x27;: {
+
+      // Active Socket Subscriptions
+      &#x27;subscriptions&#x27;: {},
+
+      // Search History
+      &#x27;search&#x27;: [],
+
+      // Debug History
+      &#x27;debug&#x27;: [],
+
+      // Active Profilers
+      &#x27;profilers&#x27;: {}
+
+    }
+
+  }, args );
+
+  /**
+   * Document constructor. Use to normalize incoming object.
+   */
+  app._document = function( item ) {
+    return item;
+  };
+
+  /**
+   * Facet constructor. Use to normalize incoming object.
+   */
+  app._facet = function( item, title ) {
+
+    var options = [];
+    for( var i in item.terms ) {
+      options.push( {
+        &#x27;text&#x27;: item.terms[i].term,
+        &#x27;id&#x27;: item.terms[i].term
+      } );
+    }
+    item._label = title;
+
+    // Objervable dropdown options
+    item.options = ko.observableArray( options );
+
+    // Observable value
+    item.value = ko.observable();
+
+    // Observable multiple options
+    item.select_multiple = ko.observableArray();
+
+    // Build Terms Query based on Facet Selections
+    item.select_multiple.subscribe( function( value ) {
+
+      // Organize terms inside query
+      app.view_model.query.terms.remove( ko.utils.arrayFirst( app.view_model.query.terms(), function( term ) {
+        return typeof term[title] != &#x27;undefined&#x27;;
+      } ) );
+
+      if( value.length ) {
+        var object = {};
+        object[title] = value;
+        app.view_model.query.terms.push( object );
+      }
+
+      // Set default size
+      app.view_model.size( parseInt( app.view_model.settings.per_page() ) );
+
+      // Do request
+      app.search_request();
+
+    } );
+
+    // Add CSS class for wrapper of facet to be able to manage its appearence in different states
+    item.css_class = ko.computed( function() {
+      var len = typeof item.options() !== &#x27;undefined&#x27; ? item.options().length : 0;
+      var len_class = len == 1 ? &#x27;eff_single_option&#x27; : (!len ? &#x27;eff_no_options&#x27; : &#x27;eff_options_&#x27; + len);
+      return len_class + &#x27; ef_facet_&#x27; + title.replace( &#x27; &#x27;, &#x27;_&#x27; );
+    } );
+
+    return item;
+  };
+
+  /**
+   * Profiler. A note is required to output.
+   *
+   * @version 0.1.1
+   * @updated 0.1.5
+   */
+  app.profile = function( name, note, args ) {
+
+    // If note is set, output timer.
+    if( app._log.profilers[ name ] &amp;&amp; note ) {
+
+      var output = [ &#x27;Profiler&#x27;, name, note, ( new Date().getTime() - app._log.profilers[ name ] ) / 1000 ];
+
+      if( args ) {
+        output.push( args );
+      }
+
+      return app.log.apply( this, output );
+    }
+
+    // Mark app.profiler as active
+    app._log.profilers[ name ] = new Date().getTime();
+
+    return this;
+  }
+
+  /**
+   * Internal logging function
+   *
+   * @updated 0.4
+   * @since 0.1
+   */
+  app.log = function() {
+
+    if( typeof console === &#x27;undefined&#x27; ) {
+      return arguments ? arguments : null;
+    }
+
+    if( arguments[0] instanceof Error ) {
+      console.error( &#x27;ElasticFilter Fatal Error:&#x27;, arguments[0].message );
+      return arguments;
+    }
+
+    console.log( arguments );
+
+    return arguments ? arguments : null;
+
+  };
+
+  /**
+   * Debug Logging. Requires debug to be set to true, unless an Error object is passed.
+   *
+   * @author potanin@UD
+   */
+  app.debug = function() {
+
+    app._log.debug.push( {&#x27;time&#x27;: new Date().getTime(), &#x27;data&#x27;: arguments} );
+
+    return (ko.utils.unwrapObservable( app.settings.debug ) || arguments[0] instanceof Error ?
+      app.log.apply( this, arguments ) : arguments );
+
+  }
+
+  /**
+   * Initial Asynchronous Initialization
+   *
+   * @todo Add Meta Mapping and have them return labels
+   * @author potanin@UD
+   */
+  app.init = function() {
+
+    utils.back_support();
+
+    app.debug( &#x27;init&#x27; );
+
+    // Make Things Happen.
+    async.auto( {
+
+      /**
+       * Verify Dependancies and Create Knockout Bindings for Elastic Filter Elements
+       */
+      &#x27;binding_handlers&#x27;: [ function( next, report ) {
+        app.debug( &#x27;init&#x27;, &#x27;auto&#x27;, &#x27;binding_handlers&#x27; );
+
+        if( typeof ko !== &#x27;object&#x27; ) {
+          return next( new Error( &#x27;Missing Knockout.&#x27; ) );
+        }
+
+        if( typeof io !== &#x27;object&#x27; ) {
+          return next( app.debug( new Error( &#x27;Missing Socket.io.&#x27; ) ) );
+        }
+
+        // Main Configurations. Merges DOM Settings into app.settings
+        ko.bindingHandlers[ &#x27;elastic-filter&#x27; ] = {
+
+          &#x27;init&#x27;: function( element, valueAccessor ) {
+            app.log( &#x27;binding_handlers&#x27;, &#x27;elastic-filter&#x27;, &#x27;init&#x27; );
+            ko.mapping.fromJS( {&#x27;settings&#x27;: jQuery.extend( true, {}, app.settings, ko.utils.unwrapObservable( valueAccessor() ) )}, app.view_model );
+            app.bindings_initialized.push( &#x27;elastic-filter&#x27; );
+          }
+
+        }
+
+        /**
+         * Handler for fulltext search function. Similar to &quot;select&quot;
+         *
+         */
+        ko.bindingHandlers[ &#x27;fulltext-search&#x27; ] = {
+
+          &#x27;init&#x27;: function( element, valueAccessor, allBindingsAccessor, viewModel, bindingContext ) {
+            app.debug( &#x27;binding_handlers&#x27;, &#x27;fulltext-search&#x27;, &#x27;init&#x27; );
+
+            if( typeof jQuery().select2 == &#x27;undefined&#x27; ) {
+              return new Error( &#x27;Select2 library is required for Fulltext Search feature&#x27; );
+            }
+
+            jQuery( element ).select2( valueAccessor() );
+
+            if( typeof allBindingsAccessor().elastic_settings != &#x27;undefined&#x27; ) {
+              ko.mapping.fromJS( {&#x27;settings&#x27;: allBindingsAccessor().elastic_settings}, app.view_model );
+            }
+
+            ko.utils.domNodeDisposal.addDisposeCallback( element, function() {
+              jQuery( element ).select2( &#x27;destroy&#x27; );
+            } );
+
+            app.bindings_initialized.push( &#x27;fulltext-search&#x27; );
+          }
+
+        };
+
+        return next( null, [ ko.bindingHandlers ] );
+
+      }],
+
+      /**
+       * Create Observables and Computed Functions
+       *
+       */
+      &#x27;observable&#x27;: [ &#x27;binding_handlers&#x27;, function( next, report ) {
+        app.debug( &#x27;init&#x27;, &#x27;auto&#x27;, &#x27;observable&#x27; );
+
+        // Create Initial JSON Object from App, and Extend Template Functions into Root
+        app.view_model = ko.mapping.fromJS( app, {
+
+          &#x27;ignore&#x27;: utils.get_methods( app ).concat( &#x27;_log&#x27;, &#x27;_required&#x27;, &#x27;model_functions&#x27;, &#x27;facet_functions&#x27;, &#x27;document_functions&#x27;, &#x27;utils&#x27;, &#x27;success&#x27;, &#x27;global&#x27; )
+
+        } );
+
+        /*app.view_model.query.full_text.subscribe(function(value){
+         app.search_request();
+         });*/
+
+        // Execute Binding Magic
+        ko.applyBindings( app.view_model );
+
+        // Expand Additional Template Functions into View Model
+        jQuery.extend( true, app.view_model, app.facet_functions, app.document_functions );
+
+        // Always a success.
+        return next( null, app );
+
+      }],
+
+      /**
+       * Initialize Socket Connection
+       *
+       */
+      &#x27;socket&#x27;: [ &#x27;observable&#x27;, function( next ) {
+        app.debug( &#x27;init&#x27;, &#x27;auto&#x27;, &#x27;socket&#x27; );
+
+        if( !app.bindings_initialized.length ) {
+          return;
+        }
+
+        if( typeof app.view_model.settings[ &#x27;account_id&#x27; ] == &#x27;undefined&#x27; || typeof app.view_model.settings[ &#x27;access_key&#x27; ] == &#x27;undefined&#x27; ) {
+          return next( new Error( &#x27;Empty credentials.&#x27; ) );
+        }
+
+        ud.socket.connect( ko.utils.unwrapObservable( app.view_model.settings[ &#x27;url&#x27; ] ), {
+          &#x27;resource&#x27;: &#x27;websocket.api/1.5&#x27;,
+          &#x27;account-id&#x27;: ko.utils.unwrapObservable( app.view_model.settings[ &#x27;account_id&#x27; ] ),
+          &#x27;access-key&#x27;: ko.utils.unwrapObservable( app.view_model.settings[ &#x27;access_key&#x27; ] )
+        }, function( error, socket ) {
+
+          app.socket = socket;
+
+          // Break initializtion chain since a WebSocket connection is required
+          if( error ) {
+            return next( error );
+          }
+
+          app.socket.once( &#x27;reconnect&#x27;, function() {
+            app.debug( new Error( &#x27;Reconnecting, re-initializing ElasticFilter.&#x27; ).arguments );
+            app.init();
+          } );
+
+          app.view_model.session_id( app.socket.sessionid );
+
+          return next( null, app.socket );
+
+        } );
+
+      }],
+
+      /**
+       * Load Settings and setup Defaults. Settings request could also be filtered via { &#x27;path&#x27;: &#x27;defaults&#x27; }
+       *
+       */
+      &#x27;settings&#x27;: [ &#x27;socket&#x27;, function( next, report ) {
+        app.debug( &#x27;init&#x27;, &#x27;auto&#x27;, &#x27;settings&#x27; );
+
+        app.socket.request( &#x27;get&#x27;, &#x27;api/v1/settings&#x27;, function( error, response ) {
+
+          app.log( &#x27;settings&#x27;, response );
+
+          if( error || !response ) {
+            return next( app.log( error || new Error( &#x27;Request for index settings returned no results.&#x27; ) ) );
+          }
+
+          ko.mapping.fromJS( {&#x27;settings&#x27;: response.settings}, app.view_model );
+
+          app.ready();
+
+          return next( null, app.settings );
+
+        } );
+
+      }],
+
+      /**
+       * Fully Loaded, make initial request
+       *
+       */
+      &#x27;ready&#x27;: [ &#x27;settings&#x27;, function( next, report ) {
+        app.debug( &#x27;init&#x27;, &#x27;auto&#x27;, &#x27;ready&#x27;, report );
+
+        // Make Default Search Requests
+        app.view_model.sort( ko.mapping.toJS( app.view_model.settings.defaults.sort ) );
+        app.view_model.size( parseInt( app.view_model.settings.per_page() ) );
+
+        // Do this only if elastic-filter binding exists on the page
+        if( app.bindings_initialized.indexOf( &#x27;elastic-filter&#x27; ) !== -1 ) {
+          app.search_request();
+        }
+
+        // Fully loaded.
+        app.view_model.elastic_ready( true );
+
+        next( null, app.view_model.elastic_ready() );
+
+      }]
+
+    }, app.initialized );
+
+    return this;
+
+  }
+
+  /**
+   * Execute Search Request. Gets value from computed_query observable
+   *
+   * @since 0.1.5
+   */
+  app.search_request = function( callback ) {
+
+    app.profile( &#x27;search_request&#x27; );
+
+    var request = {
+      index: app.view_model.settings.index(),
+      query: jQuery.extend( true, {&#x27;match_all&#x27;: {}}, ko.mapping.toJS( app.view_model.query ) ),
+      facets: ko.mapping.toJS( app.view_model.settings.facets ),
+      size: app.view_model.size(),
+      sort: app.view_model.sort()
+    }
+
+    request = utils.clean_object( request );
+
+    /** Temp logger */
+    app.computed_query = function() {
+      return request;
+    }
+
+    app.log( &#x27;search_request_data&#x27;, &#x27;Data Before Send&#x27;, request );
+
+    app.view_model.state( &#x27;loading&#x27; );
+
+    app.socket.request( &#x27;post&#x27;, &#x27;api/v1/search&#x27;, request, function( error, response ) {
+
+      /** Temp logger */
+      app.last_response = function() {
+        return response;
+      }
+
+      //** Profiling */
+      app.profile( &#x27;search_request&#x27;, &#x27;Have Cloud Response.&#x27;, response );
+      app.profile( &#x27;search_request&#x27;, &#x27;Request Mapping Start.&#x27; );
+
+      var documents = [];
+      jQuery.each( typeof response.documents !== &#x27;undefined&#x27; ? response.documents : [], function() {
+        documents.push( arguments[1] );
+      } );
+
+      app.view_model.documents( ko.utils.arrayMap( documents, function( item ) {
+        return new app._document( item );
+      } ) );
+
+      for( var i in typeof response.meta.facets != &#x27;undefined&#x27; ? response.meta.facets : {} ) {
+        var found = false;
+
+        ko.utils.arrayForEach( app.view_model.facets(), function( existing_facet ) {
+          if( i == existing_facet._label ) {
+            //existing_facet.options( item.options );
+            found = true;
+          }
+        } );
+
+        if( !found ) {
+          app.view_model.facets.push( new app._facet( response.meta.facets[i], i ) );
+        }
+      }
+
+      app.view_model.total( typeof response.meta.total != &#x27;undefined&#x27; ? response.meta.total : 0 );
+      app.view_model.state( &#x27;ready&#x27; );
+
+      //** Profiling */
+      app.profile( &#x27;search_request&#x27;, &#x27;Request Mapping Complete.&#x27; );
+
+      return typeof callback === &#x27;function&#x27; ? callback( error, response ) : response;
+
+    } );
+
+  };
+
+  /**
+   * Custom search requester.
+   */
+  app.custom_search = function( callback ) {
+    app.profile( &#x27;custom_search_start&#x27; );
+
+    var request = {
+      index: app.view_model.settings.index(),
+      query: { &quot;query_string&quot;: { &quot;query&quot;: app.view_model.query.full_text() } },
+      size: app.view_model.size(),
+      sort: app.view_model.sort()
+    }
+
+    app.socket.request( &#x27;post&#x27;, &#x27;api/v1/search&#x27;, request, callback );
+
+    app.profile( &#x27;custom_search_end&#x27; );
+
+    return true;
+  }
+
+  /**
+   * Get JSON Output of full View Model
+   *
+   * @since 0.1.5
+   */
+  app.get_json = function() {
+    return JSON.parse( ko.mapping.toJSON( app.view_model ) );
+  };
+
+  /**
+   * Post Initialization
+   *
+   */
+  app.initialized = function( error, report ) {
+    app.debug( &#x27;initialized&#x27;, arguments );
+
+    app.initialization = app.log( error ? &#x27;Initializaiton Failed.&#x27; : &#x27;Initializaiton Done.&#x27;, (
+      report ? report : error ) );
+
+    if( typeof app.ready === &#x27;function&#x27; ) {
+      app.ready( app, error, report );
+    }
+
+    return app.initialization;
+
+  };
+
+  /**
+   * Facet Functions
+   *
+   */
+  app.facet_functions = {
+
+    /**
+     * Single Facet Rendered in DOM
+     *
+     * @event afterRender
+     */
+    &#x27;facet_after_render&#x27;: function( data ) {
+    },
+
+    /**
+     * Before Single Facet is Removed from DOM
+     *
+     * @event beforeRemove
+     */
+    &#x27;facet_before_remove&#x27;: function( element ) { // app.debug( &#x27;facet_functions&#x27;, &#x27;facet_before_remove&#x27; );
+      ko.removeNode( element );
+    },
+
+    /**
+     * After a Single Facet is Added to DOM
+     *
+     * @event afterAdd
+     */
+    &#x27;facet_after_add&#x27;: function( element, something, object ) {
+    },
+
+    /**
+     * Get Best Template for Facet
+     *
+     * @todo Use .notifySubscribers() to trigger request()
+     */
+    &#x27;facet_template&#x27;: function( facet ) { // app.debug( &#x27;facet_functions&#x27;, &#x27;facet_template&#x27; );
+
+      var templates = [];
+
+      // Add Possible Templates
+      switch( facet &amp;&amp; facet._type ) {
+
+        case &#x27;terms&#x27;:
+          templates.push( &#x27;template-facet-terms&#x27; );
+          break;
+
+      }
+
+      // Default Facet Template
+      templates.push( &#x27;template-default-facet&#x27; );
+
+      return app.model_functions._get_template( templates );
+
+    },
+
+    /**
+     * Submit Search
+     */
+    &#x27;submit_facets&#x27;: function( data, event ) {
+      app.debug( &#x27;facet_functions&#x27;, &#x27;submit_facets&#x27; );
+      app.view_model.size( parseInt( app.view_model.settings.per_page() ) );
+      app.search_request();
+      return;
+    }
+
+  };
+
+  /**
+   * Document Functions
+   *
+   */
+  app.document_functions = {
+
+    /**
+     * Single Document Rendered in DOM
+     *
+     * @event afterRender
+     */
+    &#x27;document_after_render&#x27;: function( data, object ) {
+    },
+
+    /**
+     * Before Single Document is Removed from DOM
+     *
+     * @event beforeRemove
+     */
+    &#x27;document_before_remove&#x27;: function( element, something, object ) { // app.debug( &#x27;document_functions&#x27;, &#x27;document_before_remove&#x27; );
+      ko.removeNode( element );
+    },
+
+    /**
+     * After a Single Document is Added to DOM
+     *
+     * @event afterAdd
+     */
+    &#x27;document_after_add&#x27;: function( element, something, object ) {
+    },
+
+    /**
+     * Get Best Template for Document
+     *
+     */
+    &#x27;document_template&#x27;: function( document ) { // app.debug( &#x27;document_functions&#x27;, &#x27;document_template&#x27; );
+      return app.model_functions._get_template( [&#x27;template-default-document&#x27; ] );
+    },
+
+    /**
+     * Toggle Sort Option
+     */
+    &#x27;sort_by&#x27;: function( data, event ) {
+      app.debug( &#x27;document_functions&#x27;, &#x27;sort&#x27; );
+
+      jQuery( event.target ).trigger( &#x27;sort&#x27;, [data] );
+
+      var field = jQuery( event.target ).data( &#x27;field&#x27; );
+
+      var sort = ko.utils.arrayFirst( data.sort_options, function( option ) {
+        return typeof option[field] != &#x27;undefined&#x27;;
+      } );
+
+      if( app.view_model.sort() ) {
+        var existing_sort = typeof app.view_model.sort()[field] != &#x27;undefined&#x27; ? app.view_model.sort()[field] : false;
+        if( existing_sort ) {
+          sort[field].order = app.view_model.sort()[field].order == &#x27;desc&#x27; ? &#x27;asc&#x27; : &#x27;desc&#x27;;
+        }
+      }
+
+      app.view_model.sort( sort );
+      app.view_model.size( parseInt( app.view_model.settings.per_page() ) );
+      app.search_request();
+    },
+
+    /**
+     * Determine if sort type is active by sort
+     */
+    &#x27;is_active_sort&#x27;: function( data ) {
+      if( !app.view_model.sort() ) {
+        return &#x27;disabled&#x27;;
+      }
+      return typeof app.view_model.sort()[data] != &#x27;undefined&#x27; ? &#x27;active&#x27; : &#x27;disabled&#x27;;
+    },
+
+    /**
+     * If there are more results available
+     */
+    &#x27;have_more&#x27;: function( data, event ) {
+      app.debug( &#x27;document_functions&#x27;, &#x27;have_more()&#x27; );
+
+      // Create Obervable if it has not been created yet.
+      app.have_more = ko.computed( {
+        &#x27;owner&#x27;: this,
+        &#x27;read&#x27;: function() {
+          return ( app.view_model.total() &gt; app.view_model.documents().length ) ? true : false;
+        }
+      } );
+
+      return app.have_more();
+
+    },
+
+    /**
+     * Load More
+     *
+     */
+    &#x27;load_more&#x27;: function( data, event ) {
+      app.debug( &#x27;document_functions&#x27;, &#x27;load_more()&#x27; );
+      app.view_model.size( parseInt( app.view_model.size() ) + parseInt( app.view_model.settings.per_page() ) );
+      app.search_request();
+    }
+
+  };
+
+  /**
+   * Template Functions, expanded into _view_model
+   *
+   */
+  app.model_functions = {
+
+    /**
+     * Accepts an array of Knockout template IDs, and returns first one that exists in document
+     *
+     */
+    &#x27;_get_template&#x27;: function( templates ) { // app.debug( &#x27;model_functions&#x27;, &#x27;_get_template&#x27; );
+
+      for( i in templates ? templates : [] ) {
+        if( document.getElementById( templates[i] ) ) {
+          return templates[i];
+        }
+      }
+
+      return templates[0];
+
+    },
+
+    /**
+     * Delete a Document by ID (Could be triggered by subscribed event)
+     *
+     * elastic_filter.observable._documents.remove( function( item ) { item.id = 6552 } );
+     *
+     * @todo Does not work. Perhaps some issues with computation..
+     */
+    &#x27;_remove_item&#x27;: function( index, id ) { // app.debug( &#x27;model_functions&#x27;, &#x27;_remove_item&#x27; );
+
+      var items = this[ index ];
+
+      ko.utils.arrayFirst( items, function( item ) {
+
+        if( item &amp;&amp; parseInt( item.id ) === parseInt( id ) ) {
+          items.remove( document );
+          ko.utils.arrayRemoveItem( item );
+        }
+
+      } );
+
+    }
+
+  };
+
+  /**
+   * Utility Functions
+   *
+   * @author potanin@UD
+   */
+  var utils = app.utilis = {
+
+    /**
+     * Adds Compatibility with Crappy Browsers
+     *
+     */
+    &#x27;back_support&#x27;: function() {
+
+      //** IE fix for unsupported methods */
+      Object.keys = Object.keys || (function() {
+        var hasOwnProperty = Object.prototype.hasOwnProperty, hasDontEnumBug = !{toString: null}.propertyIsEnumerable( &quot;toString&quot; ), DontEnums =
+          [
+            &#x27;toString&#x27;, &#x27;toLocaleString&#x27;, &#x27;valueOf&#x27;, &#x27;hasOwnProperty&#x27;, &#x27;isPrototypeOf&#x27;, &#x27;propertyIsEnumerable&#x27;,
+            &#x27;constructor&#x27;
+          ], DontEnumsLength = DontEnums.length;
+
+        return function( o ) {
+          if( typeof o != &quot;object&quot; &amp;&amp; typeof o != &quot;function&quot; || o === null ) {
+            throw new TypeError( &quot;Object.keys called on a non-object&quot; );
+          }
+
+          var result = [];
+          for( var name in o ) {
+            if( hasOwnProperty.call( o, name ) ) {
+              result.push( name );
+            }
+          }
+
+          if( hasDontEnumBug ) {
+            for( var i = 0; i &lt; DontEnumsLength; i++ ) {
+              if( hasOwnProperty.call( o, DontEnums[i] ) ) {
+                result.push( DontEnums[i] );
+              }
+            }
+          }
+
+          return result;
+        };
+      })();
+
+    },
+
+    /**
+     * I know they are not technically methods.
+     *
+     * @version 0.1.1
+     * @author potanin@UD
+     */
+    &#x27;get_methods&#x27;: function( object ) {
+
+      var functions = jQuery.map( object, function( item, name ) {
+        if( typeof item === &#x27;function&#x27; ) {
+          return name;
+        }
+      } );
+
+      return functions;
+
+    },
+
+    /**
+     * Load Inline JSON Editor (Needs CSS Fixes and some Logic Fixes to be useful)
+     *
+     * @version 0.1.1
+     * @author potanin@UD
+     */
+    &#x27;json_editor&#x27;: function() {
+
+      ud.load.js( {&#x27;JSONEditor&#x27;: &#x27;http://ud-cdn.com/js/ud.json.editor.js&#x27;}, function() {
+
+        ud.load.css( &#x27;http://ud-cdn.com/js/assets/ud.json.editor.css&#x27; );
+
+        app.json_editor = new JSONEditor( jQuery( &#x27;.elastic_json_editor&#x27; ).get( 0 ), {
+          &#x27;indentation&#x27;: 2,
+          &#x27;search&#x27;: false,
+          &#x27;history&#x27;: false
+        } );
+
+      } );
+
+    },
+
+    /**
+     * Test if Array contains an item
+     *
+     * @version 0.1.1
+     */
+    &#x27;contains&#x27;: function( a, obj ) {
+
+      for( var i = 0; i &lt; a.length; i++ ) {
+        if( a[i] === obj ) {
+          return true;
+        }
+      }
+
+      return false;
+
+    },
+
+    /**
+     * Remove empty values
+     *
+     * @version 0.1.1
+     */
+    &#x27;clean_object&#x27;: function( object, args ) {
+
+      jQuery.extend( true, {
+        &#x27;strip_values&#x27;: []
+      }, args );
+
+      for( i in object ) {
+
+        if( !object[i] ) {
+          delete object[i];
+        }
+
+        if( object[i] === null ) {
+          delete object[i];
+        }
+
+        if( typeof object[i] === &#x27;object&#x27; ) {
+
+          if( Object.keys( object[i] ).length ) {
+            object[i] = utils.clean_object( object[i], args );
+          } else {
+            delete object[i];
+          }
+
+        }
+
+      }
+
+      return object;
+    }
+
+  }
+
+  // Load Required Assets, and then Initialize
+  ud.load.js( app._required, function() {
+    jQuery( document ).trigger( &#x27;elastic_filter::initialize&#x27; );
+  } );
+
+  return this;
+
+})();
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

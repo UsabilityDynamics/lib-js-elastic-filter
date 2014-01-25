@@ -1,0 +1,492 @@
+{
+    "project": {
+        "name": "elastic-filter",
+        "description": "elastic-filter",
+        "version": "0.0.1",
+        "url": "https://github.com/UsabilityDynamics/js-elastic-filter/",
+        "logo": "http://a3d72a45d111006ec192-ec5b80a12b0b09b4d52373336afb4254.r80.cf1.rackcdn.com/usability-dynamics.png"
+    },
+    "files": {
+        "scripts/elastic-filter.js": {
+            "name": "scripts/elastic-filter.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {},
+    "classitems": [
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 1,
+            "description": "elastic_filter.js v0.5\nhttp://usabilitydynamics.com\n=========================================================\n\nCommercial use requires one-time license fee\nhttp://usabilitydynamics.com/licenses\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"..\nhttp://usabilitydynamics.com/warranty\n\nCopyright 2012-2013 Usability Dynamics, Inc. (usabilitydynamics.com)\n\nConsole Log Commands\n====================\nLast Query: elastic_filter.computed_query();",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 136,
+            "description": "Document constructor. Use to normalize incoming object.",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 143,
+            "description": "Facet constructor. Use to normalize incoming object.",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 198,
+            "description": "Profiler. A note is required to output.",
+            "version": "0.1.1",
+            "updated": "0.1.5",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 224,
+            "description": "Internal logging function",
+            "updated": "0.4",
+            "since": "0.1",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 247,
+            "description": "Debug Logging. Requires debug to be set to true, unless an Error object is passed.",
+            "author": "potanin@UD",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 261,
+            "description": "Initial Asynchronous Initialization",
+            "todo": [
+                "Add Meta Mapping and have them return labels"
+            ],
+            "author": "potanin@UD",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 276,
+            "description": "Verify Dependancies and Create Knockout Bindings for Elastic Filter Elements",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 301,
+            "description": "Handler for fulltext search function. Similar to \"select\"",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 333,
+            "description": "Create Observables and Computed Functions",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 362,
+            "description": "Initialize Socket Connection",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 403,
+            "description": "Load Settings and setup Defaults. Settings request could also be filtered via { 'path': 'defaults' }",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 428,
+            "description": "Fully Loaded, make initial request",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 457,
+            "description": "Execute Search Request. Gets value from computed_query observable",
+            "since": "0.1.5",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 476,
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 487,
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 532,
+            "description": "Custom search requester.",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 552,
+            "description": "Get JSON Output of full View Model",
+            "since": "0.1.5",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 561,
+            "description": "Post Initialization",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 579,
+            "description": "Facet Functions",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 585,
+            "description": "Single Facet Rendered in DOM",
+            "itemtype": "event",
+            "name": "afterRender",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 593,
+            "description": "Before Single Facet is Removed from DOM",
+            "itemtype": "event",
+            "name": "beforeRemove",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 602,
+            "description": "After a Single Facet is Added to DOM",
+            "itemtype": "event",
+            "name": "afterAdd",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 610,
+            "description": "Get Best Template for Facet",
+            "todo": [
+                "Use .notifySubscribers() to trigger request()"
+            ],
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 635,
+            "description": "Submit Search",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 647,
+            "description": "Document Functions",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 653,
+            "description": "Single Document Rendered in DOM",
+            "itemtype": "event",
+            "name": "afterRender",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 661,
+            "description": "Before Single Document is Removed from DOM",
+            "itemtype": "event",
+            "name": "beforeRemove",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 670,
+            "description": "After a Single Document is Added to DOM",
+            "itemtype": "event",
+            "name": "afterAdd",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 678,
+            "description": "Get Best Template for Document",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 686,
+            "description": "Toggle Sort Option",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 712,
+            "description": "Determine if sort type is active by sort",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 722,
+            "description": "If there are more results available",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 740,
+            "description": "Load More",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 752,
+            "description": "Template Functions, expanded into _view_model",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 758,
+            "description": "Accepts an array of Knockout template IDs, and returns first one that exists in document",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 774,
+            "description": "Delete a Document by ID (Could be triggered by subscribed event)\n\nelastic_filter.observable._documents.remove( function( item ) { item.id = 6552 } );",
+            "todo": [
+                "Does not work. Perhaps some issues with computation.."
+            ],
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 798,
+            "description": "Utility Functions",
+            "author": "potanin@UD",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 805,
+            "description": "Adds Compatibility with Crappy Browsers",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 845,
+            "description": "I know they are not technically methods.",
+            "version": "0.1.1",
+            "author": "potanin@UD",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 863,
+            "description": "Load Inline JSON Editor (Needs CSS Fixes and some Logic Fixes to be useful)",
+            "version": "0.1.1",
+            "author": "potanin@UD",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 885,
+            "description": "Test if Array contains an item",
+            "version": "0.1.1",
+            "class": ""
+        },
+        {
+            "file": "scripts/elastic-filter.js",
+            "line": 902,
+            "description": "Remove empty values",
+            "version": "0.1.1",
+            "class": ""
+        }
+    ],
+    "warnings": [
+        {
+            "message": "unknown tag: version",
+            "line": " scripts/elastic-filter.js:198"
+        },
+        {
+            "message": "unknown tag: updated",
+            "line": " scripts/elastic-filter.js:198"
+        },
+        {
+            "message": "unknown tag: updated",
+            "line": " scripts/elastic-filter.js:224"
+        },
+        {
+            "message": "unknown tag: version",
+            "line": " scripts/elastic-filter.js:845"
+        },
+        {
+            "message": "unknown tag: version",
+            "line": " scripts/elastic-filter.js:863"
+        },
+        {
+            "message": "unknown tag: version",
+            "line": " scripts/elastic-filter.js:885"
+        },
+        {
+            "message": "unknown tag: version",
+            "line": " scripts/elastic-filter.js:902"
+        },
+        {
+            "message": "Missing item type\nelastic_filter.js v0.5\nhttp://usabilitydynamics.com\n=========================================================\n\nCommercial use requires one-time license fee\nhttp://usabilitydynamics.com/licenses\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"..\nhttp://usabilitydynamics.com/warranty\n\nCopyright 2012-2013 Usability Dynamics, Inc. (usabilitydynamics.com)\n\nConsole Log Commands\n====================\nLast Query: elastic_filter.computed_query();",
+            "line": " scripts/elastic-filter.js:1"
+        },
+        {
+            "message": "Missing item type\nDocument constructor. Use to normalize incoming object.",
+            "line": " scripts/elastic-filter.js:136"
+        },
+        {
+            "message": "Missing item type\nFacet constructor. Use to normalize incoming object.",
+            "line": " scripts/elastic-filter.js:143"
+        },
+        {
+            "message": "Missing item type\nProfiler. A note is required to output.",
+            "line": " scripts/elastic-filter.js:198"
+        },
+        {
+            "message": "Missing item type\nInternal logging function",
+            "line": " scripts/elastic-filter.js:224"
+        },
+        {
+            "message": "Missing item type\nDebug Logging. Requires debug to be set to true, unless an Error object is passed.",
+            "line": " scripts/elastic-filter.js:247"
+        },
+        {
+            "message": "Missing item type\nInitial Asynchronous Initialization",
+            "line": " scripts/elastic-filter.js:261"
+        },
+        {
+            "message": "Missing item type\nVerify Dependancies and Create Knockout Bindings for Elastic Filter Elements",
+            "line": " scripts/elastic-filter.js:276"
+        },
+        {
+            "message": "Missing item type\nHandler for fulltext search function. Similar to \"select\"",
+            "line": " scripts/elastic-filter.js:301"
+        },
+        {
+            "message": "Missing item type\nCreate Observables and Computed Functions",
+            "line": " scripts/elastic-filter.js:333"
+        },
+        {
+            "message": "Missing item type\nInitialize Socket Connection",
+            "line": " scripts/elastic-filter.js:362"
+        },
+        {
+            "message": "Missing item type\nLoad Settings and setup Defaults. Settings request could also be filtered via { 'path': 'defaults' }",
+            "line": " scripts/elastic-filter.js:403"
+        },
+        {
+            "message": "Missing item type\nFully Loaded, make initial request",
+            "line": " scripts/elastic-filter.js:428"
+        },
+        {
+            "message": "Missing item type\nExecute Search Request. Gets value from computed_query observable",
+            "line": " scripts/elastic-filter.js:457"
+        },
+        {
+            "message": "Missing item type",
+            "line": " scripts/elastic-filter.js:476"
+        },
+        {
+            "message": "Missing item type",
+            "line": " scripts/elastic-filter.js:487"
+        },
+        {
+            "message": "Missing item type\nCustom search requester.",
+            "line": " scripts/elastic-filter.js:532"
+        },
+        {
+            "message": "Missing item type\nGet JSON Output of full View Model",
+            "line": " scripts/elastic-filter.js:552"
+        },
+        {
+            "message": "Missing item type\nPost Initialization",
+            "line": " scripts/elastic-filter.js:561"
+        },
+        {
+            "message": "Missing item type\nFacet Functions",
+            "line": " scripts/elastic-filter.js:579"
+        },
+        {
+            "message": "Missing item type\nGet Best Template for Facet",
+            "line": " scripts/elastic-filter.js:610"
+        },
+        {
+            "message": "Missing item type\nSubmit Search",
+            "line": " scripts/elastic-filter.js:635"
+        },
+        {
+            "message": "Missing item type\nDocument Functions",
+            "line": " scripts/elastic-filter.js:647"
+        },
+        {
+            "message": "Missing item type\nGet Best Template for Document",
+            "line": " scripts/elastic-filter.js:678"
+        },
+        {
+            "message": "Missing item type\nToggle Sort Option",
+            "line": " scripts/elastic-filter.js:686"
+        },
+        {
+            "message": "Missing item type\nDetermine if sort type is active by sort",
+            "line": " scripts/elastic-filter.js:712"
+        },
+        {
+            "message": "Missing item type\nIf there are more results available",
+            "line": " scripts/elastic-filter.js:722"
+        },
+        {
+            "message": "Missing item type\nLoad More",
+            "line": " scripts/elastic-filter.js:740"
+        },
+        {
+            "message": "Missing item type\nTemplate Functions, expanded into _view_model",
+            "line": " scripts/elastic-filter.js:752"
+        },
+        {
+            "message": "Missing item type\nAccepts an array of Knockout template IDs, and returns first one that exists in document",
+            "line": " scripts/elastic-filter.js:758"
+        },
+        {
+            "message": "Missing item type\nDelete a Document by ID (Could be triggered by subscribed event)\n\nelastic_filter.observable._documents.remove( function( item ) { item.id = 6552 } );",
+            "line": " scripts/elastic-filter.js:774"
+        },
+        {
+            "message": "Missing item type\nUtility Functions",
+            "line": " scripts/elastic-filter.js:798"
+        },
+        {
+            "message": "Missing item type\nAdds Compatibility with Crappy Browsers",
+            "line": " scripts/elastic-filter.js:805"
+        },
+        {
+            "message": "Missing item type\nI know they are not technically methods.",
+            "line": " scripts/elastic-filter.js:845"
+        },
+        {
+            "message": "Missing item type\nLoad Inline JSON Editor (Needs CSS Fixes and some Logic Fixes to be useful)",
+            "line": " scripts/elastic-filter.js:863"
+        },
+        {
+            "message": "Missing item type\nTest if Array contains an item",
+            "line": " scripts/elastic-filter.js:885"
+        },
+        {
+            "message": "Missing item type\nRemove empty values",
+            "line": " scripts/elastic-filter.js:902"
+        }
+    ]
+}
