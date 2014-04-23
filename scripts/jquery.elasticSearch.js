@@ -465,7 +465,12 @@
             /**
              * Ability to query before execution
              */
-            custom_query: {}
+            custom_query: {},
+
+            /**
+             * Control location
+             */
+            location: false
           },
 
           /**
@@ -587,8 +592,6 @@
 
             /**
              * Build sort option
-             * @todo: force geo location if no point set in cookies
-             * @todo: get rid hardcoded 'hdp_event_date'
              */
             var sort = [];
             if ( this.settings.sort_by ) {
@@ -597,8 +600,8 @@
 
               switch( this.settings.sort_by ) {
                 case 'distance':
-                  var lat = Number($.cookie('latitude'))?Number($.cookie('latitude')):0;
-                  var lon = Number($.cookie('longitude'))?Number($.cookie('longitude')):0;
+                  var lat = Number($.cookie('elasticSearch_latitude'))?Number($.cookie('elasticSearch_latitude')):0;
+                  var lon = Number($.cookie('elasticSearch_longitude'))?Number($.cookie('elasticSearch_longitude')):0;
                   sort.push({
                     _geo_distance: {
                       location: [
@@ -618,7 +621,7 @@
             }
 
             /**
-             * Return ready DSL object
+             * Return ready DSL object with the ability to extend it
              */
             return $.extend({
               size: this.settings.per_page,
@@ -771,6 +774,66 @@
             Filter.form             = form;
             Filter.initial_per_page = Filter.settings.per_page;
             viewModel.filter.facetLabels( Filter.settings.facets );
+
+            /**
+              * If no coords passed
+              */
+            if ( !Filter.settings.location ) {
+
+              /**
+               * If no coords in cookies
+               */
+              if ( !Number( $.cookie('elasticSearch_latitude') ) || !Number( $.cookie('elasticSearch_longitude') ) ) {
+
+                /**
+                 * If geo API exists
+                 */
+                if ( navigator.geolocation ) {
+
+                  /**
+                   * Get position
+                   */
+                  navigator.geolocation.getCurrentPosition(
+
+                    /**
+                     * Success handler
+                     */
+                    function( position ) {
+                      _console.log( 'GeoLocation Success', arguments );
+
+                      /**
+                       * Remember coords
+                       */
+                      $.cookie('elasticSearch_latitude', position.coords.latitude );
+                      $.cookie('elasticSearch_longitude', position.coords.longitude );
+
+                      /**
+                       * Run filter again with new coords
+                       */
+                      Filter.submit( viewModel );
+                    },
+
+                    /**
+                     * Error handler
+                     */
+                    function() {
+                      _console.log( 'GeoLocation Erros', arguments );
+                    },
+
+                    /**
+                     * Options
+                     */
+                    {enableHighAccuracy: true,maximumAge: 0}
+                  );
+                }
+              }
+            } else {
+              /**
+               * Remember passed coords
+               */
+              $.cookie('elasticSearch_latitude', Filter.settings.location.latitude );
+              $.cookie('elasticSearch_longitude', Filter.settings.location.longitude );
+            }
 
             /**
              * @todo: This needs to be moved out from library
