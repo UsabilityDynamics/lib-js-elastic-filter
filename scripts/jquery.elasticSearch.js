@@ -183,13 +183,50 @@
            * Default settings
            */
           settings: {
+
+            /**
+             * Minimum number of chars to start search for
+             */
             min_chars: 3,
-            return_fields: ['post_title','permalink'],
+
+            /**
+             * Fields to return
+             */
+            return_fields: [
+              'post_title',
+              'permalink'
+            ],
+
+            /**
+             * Fields to search on
+             */
             search_fields: ['post_title'],
+
+            /**
+             * Typing timeout
+             */
             timeout: 100,
-            document_type: {your_type:'Your Type'},
+
+            /**
+             * Doc types to search in
+             */
+            document_type: {
+              unknown:'Unknown'
+            },
+
+            /**
+             * Default search direction
+             */
             sort_dir:'asc',
+
+            /**
+             * Default request size
+             */
             size:20,
+
+            /**
+             * Autocompletion form selector
+             */
             selector:'#autocompletion'
           },
 
@@ -388,9 +425,9 @@
             period_field: 'date',
 
             /**
-             * Default sort option [date|]
+             * Default sort option
              */
-            sort_by: 'hdp_event_date',
+            sort_by: 'date',
 
             /**
              * Default sorting direction
@@ -415,7 +452,17 @@
             /**
              * Facets set
              */
-            facets: {}
+            facets: {},
+
+            /**
+             * Default type
+             */
+            type: 'unknown',
+
+            /**
+             * Fields to return
+             */
+            return_fields: null
           },
 
           /**
@@ -546,14 +593,6 @@
               var sort_type = {};
 
               switch( this.settings.sort_by ) {
-
-                case 'hdp_event_date':
-                  sort_type[this.settings.period_field] = {
-                    order: this.settings.sort_dir
-                  };
-                  sort.push(sort_type);
-                  break;
-
                 case 'distance':
                   var lat = Number($.cookie('latitude'))?Number($.cookie('latitude')):0;
                   var lon = Number($.cookie('longitude'))?Number($.cookie('longitude')):0;
@@ -566,7 +605,12 @@
                     }
                   });
                   break;
-                default: break;
+                default:
+                  sort_type[this.settings.sort_by] = {
+                    order: this.settings.sort_dir
+                  };
+                  sort.push(sort_type);
+                  break;
               }
             }
 
@@ -581,6 +625,7 @@
                   filter: filter
                 }
               },
+              fields: this.settings.return_fields,
               facets: facets,
               sort: sort
             };
@@ -616,7 +661,7 @@
                * Documents type
                * @todo: dynamic
                */
-              'hdp_event',
+              this.settings.type,
 
               /**
                * Search success handler
