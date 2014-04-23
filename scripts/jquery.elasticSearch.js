@@ -475,7 +475,12 @@
             /**
              * Facet size
              */
-            facet_size: 100
+            facet_size: 100,
+
+            /**
+             * Facet input name base
+             */
+            facet_input: 'terms'
           },
 
           /**
@@ -574,10 +579,9 @@
 
             /**
              * Build filter terms based on filter form
-             * @todo: maybe need to add 'terms' as an option to be able to customize <select name="terms[]">
              */
-            if ( this.current_filters.terms ) {
-              $.each( this.current_filters.terms, function(key, value) {
+            if ( this.current_filters[this.settings.facet_input] ) {
+              $.each( this.current_filters[this.settings.facet_input], function(key, value) {
                 if ( value !== "0" ) {
                   var _term = {};
                   _term[key] = value;
