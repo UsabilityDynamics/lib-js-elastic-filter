@@ -470,7 +470,12 @@
             /**
              * Control location
              */
-            location: false
+            location: false,
+
+            /**
+             * Facet size
+             */
+            facet_size: 100
           },
 
           /**
@@ -498,6 +503,10 @@
            * @return DSL object that should be passed as query argument to ElasticSearch
            */
           buildQuery: function() {
+            /**
+             * Reference to this
+             */
+            var self = this;
 
             /**
              * Get form filter data
@@ -581,12 +590,11 @@
 
             /**
              * Build facets
-             * @todo: maybe need to add 'size' as an option to be able to control terms count to return
              */
             var facets = {};
             $.each( this.settings.facets, function( field, _ /* not used here */ ) {
               facets[field] = {
-                terms: { field: field, size: 100 }
+                terms: { field: field, size: self.settings.facet_size }
               };
             });
 
