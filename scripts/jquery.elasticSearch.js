@@ -227,7 +227,12 @@
             /**
              * Autocompletion form selector
              */
-            selector:'#autocompletion'
+            selector:'#autocompletion',
+
+            /**
+             * Ability to change query before execution
+             */
+            custom_query: {}
           },
 
           /**
@@ -250,11 +255,14 @@
             /**
              * Validate
              */
-            if ( !this.settings.fields ) {
-              _console.error( 'Autocompletion fields are empty', this.settings.fields );
+            if ( !this.settings.search_fields ) {
+              _console.error( 'Autocompletion fields are empty', this.settings.search_fields );
             }
 
-            return {
+            /**
+             * Return query object with the ability to extend or change it
+             */
+            return $.extend({
               query:{
                 multi_match:{
                   operator: "and",
@@ -262,15 +270,6 @@
                   fields: this.settings.search_fields
                 }
               },
-              /** @todo: pass this in data-binding somehow */
-              filter: {
-                range: {
-                  event_date_time: {
-                    gte: "now"
-                  }
-                }
-              },
-              /** */
               fields: this.settings.return_fields,
               sort: {
                 _type: {
@@ -278,7 +277,7 @@
                 }
               },
               size: this.settings.size
-            };
+            }, this.settings.custom_query );
           },
 
           /**
@@ -309,7 +308,6 @@
              * Run search query with timeout
              */
             viewModel.autocompletion.loading(true);
-
             this.timeout = window.setTimeout(
               /**
                * API method
@@ -462,7 +460,12 @@
             /**
              * Fields to return
              */
-            return_fields: null
+            return_fields: null,
+
+            /**
+             * Ability to query before execution
+             */
+            custom_query: {}
           },
 
           /**
@@ -617,7 +620,7 @@
             /**
              * Return ready DSL object
              */
-            return {
+            return $.extend({
               size: this.settings.per_page,
               from: this.settings.offset,
               query: {
@@ -628,7 +631,7 @@
               fields: this.settings.return_fields,
               facets: facets,
               sort: sort
-            };
+            }, this.settings.custom_query );
           },
 
           /**
@@ -659,7 +662,6 @@
 
               /**
                * Documents type
-               * @todo: dynamic
                */
               this.settings.type,
 
