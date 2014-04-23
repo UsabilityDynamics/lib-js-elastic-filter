@@ -115,7 +115,7 @@
         });
 
         /**
-         *
+         * Autocompletion visibility
          */
         this.autocompletion.visible = ko.computed(function() {
             return self.autocompletion.documents().length && !self.autocompletion.loading();
@@ -309,6 +309,7 @@
              */
             viewModel.autocompletion.loading(true);
             this.timeout = window.setTimeout(
+
               /**
                * API method
                */
@@ -337,6 +338,7 @@
                */
               function( data, xhr ) {
                 _console.debug( 'Autocompletion Search Success', arguments );
+
                 viewModel.autocompletion.documents( data.hits.hits );
                 viewModel.autocompletion.loading(false);
               },
@@ -346,6 +348,7 @@
                */
               function() {
                 _console.error( 'Autocompletion Search Error', arguments );
+
                 viewModel.autocompletion.loading(false);
               }
             );
@@ -480,7 +483,12 @@
             /**
              * Facet input name base
              */
-            facet_input: 'terms'
+            facet_input: 'terms',
+
+            /**
+             * Date Range input name base
+             */
+            date_range_input: 'date_range'
           },
 
           /**
@@ -508,6 +516,7 @@
            * @return DSL object that should be passed as query argument to ElasticSearch
            */
           buildQuery: function() {
+
             /**
              * Reference to this
              */
@@ -569,11 +578,10 @@
 
             /**
              * Determine date range if is set
-             * @todo: maybe need to add 'date_range' as an option to be able to customize <input name="date_range[lte/gte]">
              */
-            if ( !$.isEmptyObject( this.current_filters.date_range ) ) {
+            if ( !$.isEmptyObject( this.current_filters[this.settings.date_range_input] ) ) {
               var range = { range: {} };
-              range.range[this.settings.period_field] = this.current_filters.date_range;
+              range.range[this.settings.period_field] = this.current_filters[this.settings.date_range_input];
               filter['bool']['must'].push( range );
             }
 
@@ -611,9 +619,12 @@
               var sort_type = {};
 
               switch( this.settings.sort_by ) {
+
                 case 'distance':
+
                   var lat = Number($.cookie('elasticSearch_latitude'))?Number($.cookie('elasticSearch_latitude')):0;
                   var lon = Number($.cookie('elasticSearch_longitude'))?Number($.cookie('elasticSearch_longitude')):0;
+
                   sort.push({
                     _geo_distance: {
                       location: [
@@ -622,12 +633,15 @@
                       order: this.settings.sort_dir
                     }
                   });
+
                   break;
                 default:
+
                   sort_type[this.settings.sort_by] = {
                     order: this.settings.sort_dir
                   };
                   sort.push(sort_type);
+
                   break;
               }
             }
