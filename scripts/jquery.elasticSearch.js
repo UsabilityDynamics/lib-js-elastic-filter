@@ -945,7 +945,7 @@
                 buttons.removeClass(Sorter.settings.active_button_class);
                 $(this).addClass(Sorter.settings.active_button_class);
 
-                var data = jQuery.extend( {}, $(this).data() );
+                var data = $(this).data();
 
                 if ( !data.direction ) {
                   $(this).data('direction', Filter.settings.sort_dir);
@@ -1012,7 +1012,7 @@
                 $(this).addClass( Time.settings.active_button_class );
 
                 Filter.flushSettings();
-                Filter.settings.period = $(this).attr('_filter');
+                Filter.settings.period = $(this).data('type');
                 Filter.submit( viewModel );
               });
             });
