@@ -999,7 +999,6 @@
 
             /**
              * Bind button events
-             * @todo: re-implement using .data()
              */
             var buttons = $( '.' + Time.settings.button_class, element );
             $(document).on( 'elasticFilter.submit.success', function() {
@@ -1011,7 +1010,12 @@
                 buttons.removeClass( Time.settings.active_button_class );
                 $(this).addClass( Time.settings.active_button_class );
 
+                var data = $(this).data();
+
                 Filter.flushSettings();
+                if ( data.direction ) {
+                  Filter.settings.sort_dir = data.direction;
+                }
                 Filter.settings.period = $(this).data('type');
                 Filter.submit( viewModel );
               });
