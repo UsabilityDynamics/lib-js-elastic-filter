@@ -1,9 +1,23 @@
 /**
- * ElasticSearch Implementation
+ * jQuery ElasticSearch Filter Implementation
  *
- * @author korotkov@ud
+ * Copyright © 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Alexandru Marasteanu BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-(function( $ ) {
+
+;(function( $ ) {
+
+  "use strict";
 
   /**
    * ElasticSeach
@@ -862,21 +876,18 @@
             }
 
             /**
-             * @todo: This needs to be moved out from library
+             * Render new facets
              */
             $(document).on('elasticFilter.submit.success', function() {
-              $( '.hdp_event_collapsed, .hdp_event_expanded' ).unbind('click');
-              $( '.hdp_event_collapsed, .hdp_event_expanded' ).on('click', function() {
-                $( '.hdp_event_expanded:visible' ).hide();
-                $( '.hdp_event_collapsed' ).not( ':visible' ).show();
-                $( this ).toggle().siblings( '.hdp_event_collapsed, .hdp_event_expanded' ).toggle();
-              });
               if ( Filter.current_filters && Filter.current_filters.terms ) {
                 $.each( Filter.current_filters.terms, function(key, value) {
-                  $( '[name="terms['+key+']"]', form ).val( value );
+                  /**
+                   * WOW! Closure!
+                   */
+                  $( '[name="'+(function(){return Filter.settings.facet_input;}).call(this)+'['+key+']"]', form ).val( value );
                 });
               }
-              form.removeClass('jqtransformdone').jqTransform();
+              $(document).trigger( 'elasticFilter.facets.render', [form] );
             });
 
             _console.log( 'Current Filter settings', Filter.settings );
