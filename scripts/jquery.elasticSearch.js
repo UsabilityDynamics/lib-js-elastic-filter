@@ -490,6 +490,11 @@
             location: false,
 
             /**
+             * Configurable location field
+             */
+            location_field: 'location',
+
+            /**
              * Facet size
              */
             facet_size: 100,
@@ -644,14 +649,15 @@
                   var lat = Number($.cookie('elasticSearch_latitude'))?Number($.cookie('elasticSearch_latitude')):0;
                   var lon = Number($.cookie('elasticSearch_longitude'))?Number($.cookie('elasticSearch_longitude')):0;
 
+                  var _geo_distance = {};
+                  _geo_distance[this.settings.location_field] = {
+                    lat: lat, lon: lon
+                  };
+                  _geo_distance['order'] = this.settings.sort_dir;
+                  _geo_distance['unit'] = "m";
+
                   sort.push({
-                    _geo_distance: {
-                      location: {
-                        lat: lat, lon: lon
-                      },
-                      order: this.settings.sort_dir,
-                      unit: "m"
-                    }
+                    _geo_distance: _geo_distance
                   });
 
                   break;
