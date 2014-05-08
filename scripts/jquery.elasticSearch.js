@@ -1153,6 +1153,7 @@
 
           if ( client )
             client.get( 'documents/'+type+'/search', 'source='+JSON.stringify( query ), success, error );
+            //client.post( 'documents/'+type+'/search', JSON.stringify( query ), success, error );
           else _console.error( 'API Search Error', 'Client is undefined' );
         }
 
@@ -1216,11 +1217,11 @@
         json = {},
         push_counters = {},
         patterns = {
-          "validate": /^[a-zA-Z][a-zA-Z0-9_]*(?:\[(?:\d*|[a-zA-Z0-9_]+)\])*$/,
-          "key": /[a-zA-Z0-9_]+|(?=\[\])/g,
+          "validate": /^[a-zA-Z][a-zA-Z0-9_.-]*(?:\[(?:\d*|[a-zA-Z0-9_.-]+)\])*$/,
+          "key": /[a-zA-Z0-9_.-]+|(?=\[\])/g,
           "push": /^$/,
           "fixed": /^\d+$/,
-          "named": /^[a-zA-Z0-9_]+$/
+          "named": /^[a-zA-Z0-9_.-]+$/
         };
 
     this.build = function(base, key, value) {
