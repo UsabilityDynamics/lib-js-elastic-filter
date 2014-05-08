@@ -1,6 +1,8 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
+ * @version 1.5
+ *
  * Copyright © 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
@@ -822,8 +824,8 @@
             viewModel.filter.facetLabels( Filter.settings.facets );
 
             /**
-              * If no coords passed
-              */
+             * If no coords passed
+             */
             if ( !Filter.settings.location ) {
 
               /**
@@ -1138,6 +1140,9 @@
          * @param {type} type
          * @param {type} success
          * @param {type} error
+         *
+         * @todo make index configurable
+         * @todo make 'search' controller configurable
          */
         search: function( query, type, success, error ) {
           _console.log( 'API Search', arguments );
@@ -1147,7 +1152,7 @@
           }
 
           if ( client )
-            client.post( 'documents/'+type+'/search', JSON.stringify( query ), success, error );
+            client.get( 'documents/'+type+'/search', 'source='+JSON.stringify( query ), success, error );
           else _console.error( 'API Search Error', 'Client is undefined' );
         }
 
