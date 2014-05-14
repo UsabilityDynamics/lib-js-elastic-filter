@@ -1,29 +1,21 @@
-Full Text Search
-================
-If need to use fulltext search w/o filter on some page:
+Overview
+========
 
-  <input data-bind="fulltext-search: {minimumInputLength: 3, query:fulltext_search_query, formatSelection:selection_callback}" />
-
-   <input type="text" data-bind="elastic_settings: { access_hash: 'g57sXPt....iPYNXwQ6' }, fulltext-search: {
-     minimumInputLength: 3,
-     query: hddp.fulltext_search_query,
-     formatSelection:hddp.selection_callback
-   }" />
-
-* fulltext_search_query - function with query process.
-* selection_callback - callback function for click event.
-
-For more parameters see http://ivaynberg.github.com/select2/#documentation
+Allows to implement ElasticSearch filter. Uses jQuery and XMLHttpRequest client. Supports facets and range filters.
 
 Changelog
 =========
 
-= Version 0.4 =
-* WebSocket requests must follow RESTful naming convention via ud.socket library.
-* The term "Index" now refers to a specific database in an "Account".
-* Upon connection the Web Client connects to a specific Account, and will no longer need to specify it on every request.
-* Setting "url" and "key" parameters are replaced by "access-key" and "account-id".
-* WebSocket connections now must set the account they are connection to as part of the URL, which is a namespace.
+= Version 1.5 =
+* Fix to serializeObject to allow dots and dashes in names
+* Changed api.search method to use GET
+* Added option to configure location field
+
+= Version 1.0 =
+* Removed hardcoded things via triggers
+* Added ability to set custom sort direction for time controller
+* Fix to sorting direction
+* Fixed geo sorting + general fixes
 
 ## License
 

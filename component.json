@@ -1,19 +1,19 @@
 {
-  "name": "elastic-filter",
-  "version": "0.0.5",
+  "name": "lib-js-elastic-filter",
+  "version": "1.5",
   "description": "The elastic-filter component library.",
-  "homepage": "http://github.com/UsabilityDynamics/js-elastic-filter",
+  "homepage": "http://github.com/UsabilityDynamics/lib-js-elastic-filter",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/UsabilityDynamics/js-elastic-filter"
+    "url": "https://github.com/UsabilityDynamics/lib-js-elastic-filter"
   },
-  "dependencies": {},
+  "dependencies": { "jquery" },
   "files": [
     "files/schema/elastic-filter.json"
   ],
   "scripts": [
-    "scripts/elastic-filter.js"
+    "scripts/jquery.elasticSearch.js"
   ],
   "authors": [
     {
