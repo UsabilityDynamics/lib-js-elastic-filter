@@ -321,9 +321,18 @@
             _console.log( 'Search fired for ', element.val() );
 
             /**
-             * Run search query with timeout
+             * Activate loading
              */
             viewModel.autocompletion.loading(true);
+
+            /**
+             * Configure API
+             */
+            api.index( this.settings.index ).controllers( this.settings.controllers );
+
+            /**
+             * Run
+             */
             this.timeout = window.setTimeout(
 
               /**
@@ -710,7 +719,10 @@
             /**
              * Run search request
              */
-            api.search(
+            api
+              .index( self.settings.index )
+              .controllers( self.settings.controllers )
+              .search(
 
               /**
                * Build and pass DSL Query
@@ -1135,16 +1147,54 @@
       api = {
 
         /**
+         * Default index
+         */
+        _index: 'documents',
+
+        /**
+         * Default controllers uri
+         */
+        _controllers: {
+          search: 'search'
+        },
+
+        /**
+         * Index setter
+         * @param {type} index
+         * @returns {_L20.$.fn.elasticSearch.api}
+         */
+        index: function( index ) {
+          _console.debug( 'API Index extend', index );
+
+          if ( index )
+            this._index = index;
+
+          return this;
+        },
+
+        /**
+         * Controllers setter
+         * @param {type} controllers
+         * @returns {_L20.$.fn.elasticSearch.api}
+         */
+        controllers: function( controllers ) {
+          _console.debug( 'API Controllers extend', controllers );
+
+          $.extend( this._controllers, controllers );
+
+          return this;
+        },
+
+        /**
          * Do Search request
          * @param {type} query
          * @param {type} type
          * @param {type} success
          * @param {type} error
          *
-         * @todo make index configurable
-         * @todo make 'search' controller configurable
          */
         search: function( query, type, success, error ) {
+          _console.log( 'API', api );
           _console.log( 'API Search', arguments );
 
           if ( !type ) {
@@ -1152,9 +1202,10 @@
           }
 
           if ( client )
-            client.get( 'documents/'+type+'/search', 'source='+JSON.stringify( query ), success, error );
-            //client.post( 'documents/'+type+'/search', JSON.stringify( query ), success, error );
+            client.get( api._index+'/'+type+'/'+api._controllers.search, 'source='+JSON.stringify( query ), success, error );
           else _console.error( 'API Search Error', 'Client is undefined' );
+
+          return api;
         }
 
       },

@@ -11,6 +11,7 @@ Changelog
 * Changed api.search method to use GET
 * Added option to configure location field
 * Hardcoded things removed
+* Configurable index and api controllers
 
 = Version 1.0 =
 * Removed hardcoded things via triggers
