@@ -1155,7 +1155,7 @@
          * Default controllers uri
          */
         _controllers: {
-          search: 'search'
+          search: '_search'
         },
 
         /**
