@@ -1,7 +1,7 @@
 Overview
 ========
 
-Allows to implement ElasticSearch filter. Uses jQuery and XMLHttpRequest client. Supports facets and range filters.
+Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpRequest client. Supports facets and range filters.
 
 Changelog
 =========
