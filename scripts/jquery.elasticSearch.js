@@ -1192,8 +1192,12 @@
          * Init Client
          */
         client = ejs.HttpClient( options.endpoint );
-        if ( options.access_key ) {
-          client.addHeader( 'x-access-key', options.access_key );
+        _console.debug( 'Init Options', options );
+
+        if ( options.headers ) {
+          for( var i in options.headers ) {
+            client.addHeader( i, options.headers[i] );
+          }
         }
         _console.debug( 'Client init', client );
 
