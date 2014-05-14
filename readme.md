@@ -10,6 +10,7 @@ Changelog
 * Fix to serializeObject to allow dots and dashes in names
 * Changed api.search method to use GET
 * Added option to configure location field
+* Hardcoded things removed
 
 = Version 1.0 =
 * Removed hardcoded things via triggers
