@@ -257,7 +257,7 @@
           timeout: null,
 
           /**
-           * Build query
+           * Build DSL query
            */
           buildQuery: function( query_string ) {
 
@@ -441,6 +441,14 @@
           settings: {
 
             /**
+             * Time point for present. Will be used for period filtering.
+             */
+            middle_timepoint: {
+              gte: 'now',
+              lte: 'now'
+            },
+
+            /**
              * Default period direction
              */
             period: 'upcoming',
@@ -590,7 +598,7 @@
                 case 'upcoming':
 
                   period.range[this.settings.period_field] = {
-                     gte:'now'
+                     gte:this.settings.middle_timepoint.gte
                   };
 
                   filter['bool']['must'].push( period );
@@ -600,7 +608,7 @@
                 case 'past':
 
                   period.range[this.settings.period_field] = {
-                     lte:'now'
+                     lte:this.settings.middle_timepoint.lte
                   };
 
                   filter['bool']['must'].push( period );
