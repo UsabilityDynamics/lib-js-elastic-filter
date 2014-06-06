@@ -1,7 +1,7 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
- * @version 1.5
+ * @version 1.5.1
  *
  * Copyright © 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
@@ -1210,7 +1210,7 @@
           }
 
           if ( client )
-            client.get( api._index+'/'+type+'/'+api._controllers.search, 'source='+JSON.stringify( query ), success, error );
+            client.get( api._index+'/'+type+'/'+api._controllers.search, 'source='+encodeURIComponent(JSON.stringify( query )), success, error );
           else _console.error( 'API Search Error', 'Client is undefined' );
 
           return api;

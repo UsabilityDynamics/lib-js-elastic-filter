@@ -6,6 +6,9 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 1.5.1 =
+* Fix to api.search method. Ampersand issue.
+
 = Version 1.5 =
 * Fix to serializeObject to allow dots and dashes in names
 * Changed api.search method to use GET
