@@ -1,7 +1,7 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
- * @version 1.5.1
+ * @version 2.0
  *
  * Copyright © 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
@@ -94,7 +94,7 @@
        *
        * @type function
        */
-      viewModel = function() {
+      viewModel = function( scopes ) {
 
         /**
          * Reference to this
@@ -138,49 +138,64 @@
         });
 
         /**
-         * Filter Object
+         *
+         * @param {type} scope
          */
-        this.filter = {
+        this._filter_model = function( scope ) {
+
+          var self = this;
+
+          /**
+           *
+           */
+          this.scope = scope;
 
           /**
            * Filtered documents collection
            */
-          documents: ko.observableArray([]),
+          this.documents = ko.observableArray([]);
 
           /**
            * Total filtered documents
            */
-          total: ko.observable(0),
+          this.total = ko.observable(0);
 
           /**
            * Filter facets collection
            */
-          facets: ko.observableArray([]),
+          this.facets = ko.observableArray([]);
 
           /**
            * More button docs count
            */
-          moreCount: ko.observable(0),
+          this.moreCount = ko.observable(0);
 
           /**
            * Human facet labels
            */
-          facetLabels: ko.observable({})
+          this.facetLabels = ko.observable({});
+
+          /**
+           * Filtered docs count
+           */
+          this.count = ko.computed(function() {
+            return self.documents().length;
+          });
+
+          /**
+           * Determine whether filter has more documents to show oe not
+           */
+          this.has_more_documents = ko.computed(function() {
+            return self.total() > self.count();
+          });
         };
 
         /**
-         * Filtered docs count
+         * Init by scopes
          */
-        this.filter.count = ko.computed(function() {
-          return self.filter.documents().length;
-        });
-
-        /**
-         * Determine whether filter has more documents to show oe not
-         */
-        this.filter.has_more_documents = ko.computed(function() {
-          return self.filter.total() > self.filter.count();
-        });
+        for ( var i in scopes ) {
+          this[scopes[i]] = new this._filter_model( scopes[i] );
+        }
 
       },
 
@@ -438,116 +453,116 @@
           /**
            * Filter defaults
            */
-          settings: {
+          settings: function() {
 
             /**
              * Time point for present. Will be used for period filtering.
              */
-            middle_timepoint: {
+            this.middle_timepoint ={
               gte: 'now',
               lte: 'now'
-            },
+            };
 
             /**
              * Default period direction
              */
-            period: 'upcoming',
+            this.period = 'upcoming';
 
             /**
              * Default field that is responsible for date filtering
              */
-            period_field: 'date',
+            this.period_field = 'date';
 
             /**
              * Default sort option
              */
-            sort_by: 'date',
+            this.sort_by = 'date';
 
             /**
              * Default sorting direction
              */
-            sort_dir: 'asc',
+            this.sort_dir = 'asc';
 
             /**
              * Default number of document per page
              */
-            per_page: 20,
+            this.per_page = 20;
 
             /**
              * Offset number
              */
-            offset: 0,
+            this.offset = 0;
 
             /**
              * Bool flag for more button
              */
-            is_more: false,
+            this.is_more = false;
 
             /**
              * Facets set
              */
-            facets: {},
+            this.facets = {};
 
             /**
              * Default type
              */
-            type: 'unknown',
+            this.type = 'unknown';
 
             /**
              * Fields to return
              */
-            return_fields: null,
+            this.return_fields = null;
 
             /**
              * Ability to query before execution
              */
-            custom_query: {},
+            this.custom_query = {};
 
             /**
              * Control location
              */
-            location: false,
+            this.location = false;
 
             /**
              * Configurable location field
              */
-            location_field: 'location',
+            this.location_field = 'location';
 
             /**
              * Facet size
              */
-            facet_size: 100,
+            this.facet_size = 100;
 
             /**
              * Facet input name base
              */
-            facet_input: 'terms',
+            this.facet_input = 'terms';
 
             /**
              * Date Range input name base
              */
-            date_range_input: 'date_range',
+            this.date_range_input = 'date_range';
 
             /**
              * Default loading indicator selector
              */
-            loader_selector: '.df_overlay_back, .df_overlay'
+            this.loader_selector = '.df_overlay_back, .df_overlay';
+
+            /**
+             * Store initial value of per page
+             */
+            this.initial_per_page = 20;
+
+            /**
+             * Store current filter options to use after re-rendering
+             */
+            this.current_filters = null;
+
+            /**
+             * DOM Element of filter form
+             */
+            this.form = null;
           },
-
-          /**
-           * Store initial value of per page
-           */
-          initial_per_page: 20,
-
-          /**
-           * Store current filter options to use after re-rendering
-           */
-          current_filters: null,
-
-          /**
-           * DOM Element of filter form
-           */
-          form: null,
 
           /**
            * Loading indicator
@@ -558,7 +573,7 @@
            * DSL Query builder function
            * @return DSL object that should be passed as query argument to ElasticSearch
            */
-          buildQuery: function() {
+          buildQuery: function( scope ) {
 
             /**
              * Reference to this
@@ -568,14 +583,14 @@
             /**
              * Get form filter data
              */
-            this.current_filters = this.form.serializeObject();
+            this[scope].current_filters = this[scope].form.serializeObject();
 
             /**
              * Clean object from empty/null values
              */
-            cleanObject( this.current_filters );
+            cleanObject( this[scope].current_filters );
 
-            _console.log('Current filter data:', this.current_filters);
+            _console.log('Current filter data:', this[scope].current_filters);
 
             /**
              * Start building the Query
@@ -589,16 +604,16 @@
             /**
              * Determine filter period
              */
-            if ( this.settings.period ) {
+            if ( this[scope].period ) {
 
               var period = { range: {} };
 
-              switch( this.settings.period ) {
+              switch( this[scope].period ) {
 
                 case 'upcoming':
 
-                  period.range[this.settings.period_field] = {
-                     gte:this.settings.middle_timepoint.gte
+                  period.range[this[scope].period_field] = {
+                     gte:this[scope].middle_timepoint.gte
                   };
 
                   filter['bool']['must'].push( period );
@@ -607,8 +622,8 @@
 
                 case 'past':
 
-                  period.range[this.settings.period_field] = {
-                     lte:this.settings.middle_timepoint.lte
+                  period.range[this[scope].period_field] = {
+                     lte:this[scope].middle_timepoint.lte
                   };
 
                   filter['bool']['must'].push( period );
@@ -622,17 +637,17 @@
             /**
              * Determine date range if is set
              */
-            if ( !$.isEmptyObject( this.current_filters[this.settings.date_range_input] ) ) {
+            if ( !$.isEmptyObject( this[scope].current_filters[this[scope].date_range_input] ) ) {
               var range = { range: {} };
-              range.range[this.settings.period_field] = this.current_filters[this.settings.date_range_input];
+              range.range[this[scope].period_field] = this[scope].current_filters[this[scope].date_range_input];
               filter['bool']['must'].push( range );
             }
 
             /**
              * Build filter terms based on filter form
              */
-            if ( this.current_filters[this.settings.facet_input] ) {
-              $.each( this.current_filters[this.settings.facet_input], function(key, value) {
+            if ( this[scope].current_filters[this[scope].facet_input] ) {
+              $.each( this[scope].current_filters[this[scope].facet_input], function(key, value) {
                 if ( value !== "0" ) {
                   var _term = {};
                   _term[key] = value;
@@ -647,9 +662,9 @@
              * Build facets
              */
             var facets = {};
-            $.each( this.settings.facets, function( field, _ /* not used here */ ) {
+            $.each( this[scope].facets, function( field, _ /* not used here */ ) {
               facets[field] = {
-                terms: { field: field, size: self.settings.facet_size }
+                terms: { field: field, size: self[scope].facet_size }
               };
             });
 
@@ -657,11 +672,11 @@
              * Build sort option
              */
             var sort = [];
-            if ( this.settings.sort_by ) {
+            if ( this[scope].sort_by ) {
 
               var sort_type = {};
 
-              switch( this.settings.sort_by ) {
+              switch( this[scope].sort_by ) {
 
                 case 'distance':
 
@@ -669,10 +684,10 @@
                   var lon = Number($.cookie('elasticSearch_longitude'))?Number($.cookie('elasticSearch_longitude')):0;
 
                   var _geo_distance = {};
-                  _geo_distance[this.settings.location_field] = {
+                  _geo_distance[this[scope].location_field] = {
                     lat: lat, lon: lon
                   };
-                  _geo_distance['order'] = this.settings.sort_dir;
+                  _geo_distance['order'] = this[scope].sort_dir;
                   _geo_distance['unit'] = "m";
 
                   sort.push({
@@ -682,8 +697,8 @@
                   break;
                 default:
 
-                  sort_type[this.settings.sort_by] = {
-                    order: this.settings.sort_dir
+                  sort_type[this[scope].sort_by] = {
+                    order: this[scope].sort_dir
                   };
                   sort.push(sort_type);
 
@@ -695,23 +710,23 @@
              * Return ready DSL object with the ability to extend it
              */
             return $.extend({
-              size: this.settings.per_page,
-              from: this.settings.offset,
+              size: this[scope].per_page,
+              from: this[scope].offset,
               query: {
                 filtered: {
                   filter: filter
                 }
               },
-              fields: this.settings.return_fields,
+              fields: this[scope].return_fields,
               facets: facets,
               sort: sort
-            }, this.settings.custom_query );
+            }, this[scope].custom_query );
           },
 
           /**
            * Submit filter request
            */
-          submit: function( viewModel ) {
+          submit: function( viewModel, scope ) {
 
             /**
              * Reference to this
@@ -728,19 +743,19 @@
              * Run search request
              */
             api
-              .index( self.settings.index )
-              .controllers( self.settings.controllers )
+              .index( self[scope].index )
+              .controllers( self[scope].controllers )
               .search(
 
               /**
                * Build and pass DSL Query
                */
-              this.buildQuery(),
+              this.buildQuery( scope ),
 
               /**
                * Documents type
                */
-              this.settings.type,
+              this[scope].type,
 
               /**
                * Search success handler
@@ -755,31 +770,33 @@
                  * If is a result of More request then append hits to existing.
                  * Otherwise just replace.
                  */
-                if ( self.settings.is_more ) {
-                  var current_hits = viewModel.filter.documents();
+                if ( self[scope].is_more ) {
+                  var current_hits = viewModel.documents();
 
                   $.each( data.hits.hits, function(k, hit) {
                     current_hits.push( hit );
                   });
 
-                  viewModel.filter.documents( current_hits );
+                  viewModel.documents( current_hits );
                 } else {
-                  viewModel.filter.documents( data.hits.hits );
+                  viewModel.documents( data.hits.hits );
                 }
 
                 /**
                  * Store total
                  */
-                viewModel.filter.total( data.hits.total );
+                viewModel.total( data.hits.total );
 
                 /**
                  * Update facets
                  */
-                viewModel.filter.facets([]);
-                $.each( data.facets, function( key, value ) {
-                  value.key = key;
-                  viewModel.filter.facets.push(value);
-                });
+                viewModel.facets([]);
+                if ( typeof data.facets !== 'undefined' ) {
+                  $.each( data.facets, function( key, value ) {
+                    value.key = key;
+                    viewModel.facets.push(value);
+                  });
+                }
 
                 /**
                  * Hide loader indicator
@@ -806,10 +823,10 @@
           /**
            * Flush filter settings
            */
-          flushSettings: function() {
-            this.settings.is_more  = false;
-            this.settings.offset   = 0;
-            this.settings.per_page = this.initial_per_page;
+          flushSettings: function( scope ) {
+            this[scope].is_more  = false;
+            this[scope].offset   = 0;
+            this[scope].per_page = this[scope].initial_per_page;
           },
 
           /**
@@ -835,18 +852,26 @@
               filters = $( 'input,select', form );
 
             /**
+             * Define Scope
+             */
+            var scope = form.data( 'scope' );
+
+            /**
              * Define settings
              */
-            Filter.settings         = $.extend( Filter.settings, valueAccessor() );
-            Filter.loader           = $( Filter.settings.loader_selector );
-            Filter.form             = form;
-            Filter.initial_per_page = Filter.settings.per_page;
-            viewModel.filter.facetLabels( Filter.settings.facets );
+            if ( typeof Filter[scope] === 'undefined' ) {
+              Filter[scope] = {};
+            }
+            Filter[scope]                  = $.extend( new Filter.settings, valueAccessor() );
+            Filter.loader                  = $( Filter[scope].loader_selector );
+            Filter[scope].form             = form;
+            Filter[scope].initial_per_page = Filter[scope].per_page;
+            viewModel[scope].facetLabels( Filter[scope].facets );
 
             /**
              * If no coords passed
              */
-            if ( !Filter.settings.location ) {
+            if ( !Filter[scope].location ) {
 
               /**
                * If no coords in cookies
@@ -878,7 +903,7 @@
                       /**
                        * Run filter again with new coords
                        */
-                      Filter.submit( viewModel );
+                      Filter.submit( viewModel[scope], scope );
                     },
 
                     /**
@@ -899,39 +924,39 @@
               /**
                * Remember passed coords
                */
-              $.cookie('elasticSearch_latitude', Filter.settings.location.latitude );
-              $.cookie('elasticSearch_longitude', Filter.settings.location.longitude );
+              $.cookie('elasticSearch_latitude', Filter[scope].location.latitude );
+              $.cookie('elasticSearch_longitude', Filter[scope].location.longitude );
             }
 
             /**
              * Render new facets
              */
             $(document).on('elasticFilter.submit.success', function() {
-              if ( Filter.current_filters && Filter.current_filters.terms ) {
-                $.each( Filter.current_filters.terms, function(key, value) {
+              if ( Filter[scope].current_filters && Filter[scope].current_filters.terms ) {
+                $.each( Filter[scope].current_filters.terms, function(key, value) {
                   /**
                    * WOW! Closure!
                    */
-                  $( '[name="'+(function(){return Filter.settings.facet_input;}).call(this)+'['+key+']"]', form ).val( value );
+                  $( '[name="'+(function(){return Filter[scope].facet_input;}).call(this)+'['+key+']"]', Filter[scope].form ).val( value );
                 });
               }
-              $(document).trigger( 'elasticFilter.facets.render', [form] );
+              $(document).trigger( 'elasticFilter.facets.render', [Filter[scope].form] );
             });
 
-            _console.log( 'Current Filter settings', Filter.settings );
+            _console.log( 'Current Filter settings', Filter[scope] );
 
             /**
              * Bind change event
              */
             filters.live('change', function(){
-              Filter.flushSettings();
-              Filter.submit( viewModel );
+              Filter.flushSettings( scope );
+              Filter.submit( viewModel[scope], scope );
             });
 
             /**
              * Initial filter submit
              */
-            Filter.submit( viewModel );
+            Filter.submit( viewModel[scope], scope );
           }
 
         },
@@ -944,9 +969,11 @@
           /**
            * Default settings
            */
-          settings: {
-            button_class:'df_element',
-            active_button_class:'df_sortable_active'
+          settings: function() {
+
+            this.button_class = 'df_element';
+
+            this.active_button_class = 'df_sortable_active';
           },
 
           /**
@@ -964,38 +991,44 @@
               /**
                * Reference to tis sorter object
                */
-              Sorter = bindings.elasticSortControl;
+              Sorter = bindings.elasticSortControl,
+
+              /**
+               * Current scope
+               * Allows to use multiple filters on one page
+               */
+              scope = $(element).data('scope');
 
             /**
              * Set settings
              */
-            Sorter.settings = $.extend( Sorter.settings, valueAccessor() );
+            Sorter[scope] = $.extend( new Sorter.settings, valueAccessor() );
 
             /**
              * Bind buttons events
              */
-            var buttons = $('.'+Sorter.settings.button_class, element);
+            var buttons = $('.'+Sorter[scope].button_class, element);
             $(document).on('elasticFilter.submit.success', function() {
 
               buttons.unbind('click');
 
               buttons.on('click', function() {
 
-                buttons.removeClass(Sorter.settings.active_button_class);
-                $(this).addClass(Sorter.settings.active_button_class);
+                buttons.removeClass(Sorter[scope].active_button_class);
+                $(this).addClass(Sorter[scope].active_button_class);
 
                 var data = $(this).data();
 
                 if ( !data.direction ) {
-                  $(this).data('direction', Filter.settings.sort_dir);
+                  $(this).data('direction', Filter[scope].sort_dir);
                 }
 
                 $(this).data('direction', data.direction==='asc'?'desc':'asc');
 
-                Filter.flushSettings();
-                Filter.settings.sort_by = data.type;
-                Filter.settings.sort_dir = data.direction;
-                Filter.submit( viewModel );
+                Filter.flushSettings( scope );
+                Filter[scope].sort_by = data.type;
+                Filter[scope].sort_dir = data.direction;
+                Filter.submit( viewModel[scope], scope );
               });
             });
           }
@@ -1009,9 +1042,11 @@
           /**
            * Default settings
            */
-          settings: {
-            button_class:'df_element',
-            active_button_class:'df_sortable_active'
+          settings: function() {
+
+            this.button_class = 'df_element';
+
+            this.active_button_class = 'df_sortable_active';
           },
 
           /**
@@ -1029,34 +1064,40 @@
               /**
                * Time controll object
                */
-              Time = bindings.elasticTimeControl;
+              Time = bindings.elasticTimeControl,
+
+              /**
+               * Current scope
+               * Allows to use multiple filters on one page
+               */
+              scope = $(element).data('scope');
 
             /**
              * Set settings
              */
-            Time.settings = $.extend( Time.settings, valueAccessor() );
+            Time[scope] = $.extend( new Time.settings, valueAccessor() );
 
             /**
              * Bind button events
              */
-            var buttons = $( '.' + Time.settings.button_class, element );
+            var buttons = $( '.' + Time[scope].button_class, element );
             $(document).on( 'elasticFilter.submit.success', function() {
 
               buttons.unbind( 'click' );
 
               buttons.on( 'click', function() {
 
-                buttons.removeClass( Time.settings.active_button_class );
-                $(this).addClass( Time.settings.active_button_class );
+                buttons.removeClass( Time[scope].active_button_class );
+                $(this).addClass( Time[scope].active_button_class );
 
                 var data = $(this).data();
 
-                Filter.flushSettings();
+                Filter.flushSettings( scope );
                 if ( data.direction ) {
-                  Filter.settings.sort_dir = data.direction;
+                  Filter[scope].sort_dir = data.direction;
                 }
-                Filter.settings.period = $(this).data('type');
-                Filter.submit( viewModel );
+                Filter[scope].period = $(this).data('type');
+                Filter.submit( viewModel[scope], scope );
               });
             });
           }
@@ -1070,8 +1111,10 @@
           /**
            * Default settings
            */
-          settings: {
-            count: 10
+          settings: function() {
+
+            this.count = 10;
+
           },
 
           /**
@@ -1089,22 +1132,28 @@
               /**
                * Filter object
                */
-              Filter = bindings.elasticFilter;
+              Filter = bindings.elasticFilter,
+
+              /**
+               *
+               * @type @call;$@call;data
+               */
+              scope = $(element).data('scope');
 
             /**
              * Set settings
              */
-            ShowMore.settings = $.extend( ShowMore.settings, valueAccessor() );
-            viewModel.filter.moreCount( ShowMore.settings.count );
+            ShowMore[scope]         = $.extend( new ShowMore.settings, valueAccessor() );
+            viewModel[scope].moreCount( ShowMore[scope].count );
 
             /**
              * Bind button events
              */
             $(element).on('click', function(){
-              Filter.settings.per_page = ShowMore.settings.count;
-              Filter.settings.offset   = viewModel.filter.count();
-              Filter.settings.is_more  = true;
-              Filter.submit( viewModel );
+              Filter[scope].per_page = ShowMore[scope].count;
+              Filter[scope].offset   = viewModel[scope].count();
+              Filter[scope].is_more  = true;
+              Filter.submit( viewModel[scope], scope );
             });
           }
         },
@@ -1260,10 +1309,19 @@
         }
         _console.debug( 'Client init', client );
 
+        var scopes = [];
+        $( '[data-scope]', self[0] ).each( function() {
+          if ( scopes.indexOf( $( this ).data('scope') ) < 0 ) {
+            scopes.push( $( this ).data('scope') );
+          }
+        });
+        _console.log( scopes );
+
         /**
          * Apply view model
+         * @todo: load scopes dynamicaly
          */
-        ko.applyBindings( new viewModel(), self[0] );
+        ko.applyBindings( new viewModel( scopes ), self[0] );
 
         return self;
       };

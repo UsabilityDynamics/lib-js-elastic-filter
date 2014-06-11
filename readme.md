@@ -6,6 +6,9 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 2.0 =
+* Re-factoring in order to make possible to use multiple filters on one page.
+
 = Version 1.5.1 =
 * Fix to api.search method. Ampersand issue.
 
