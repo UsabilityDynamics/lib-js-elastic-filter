@@ -1,7 +1,7 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
- * @version 2.0
+ * @version 2.5
  *
  * Copyright © 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
@@ -91,89 +91,97 @@
 
       /**
        * Global viewmodel
-       *
        * @type function
        */
-      viewModel = function( scopes ) {
-
-        /**
-         * Reference to this
-         * @type @this;
-         */
-        var self = this;
+      viewModel = function( scopes, suggesters ) {
 
         /**
          * Autocompletion Object
          */
-        this.autocompletion = {
+        this._suggester_model = function( scope ) {
+
+          /**
+           * Reference to this
+           * @type @this;
+           */
+          var self = this;
+
+          /**
+           * Current scope
+           */
+          this.scope = scope;
 
           /**
            * Documents Collection
            */
-          documents: ko.observableArray( [] ),
+          this.documents = ko.observableArray( [] );
 
           /**
            * Types
            */
-          types: ko.observable( {} ),
+          this.types = ko.observable( {} );
 
           /**
            * Visibility flag
            */
-          loading: ko.observable( false )
+          this.loading = ko.observable( false );
+
+          /**
+           * Autocompletion docs count
+           */
+          this.count = ko.computed(function() {
+            return self.documents().length;
+          });
+
+          /**
+           * Autocompletion visibility
+           */
+          this.visible = ko.computed(function() {
+            return self.documents().length && !self.loading();
+          });
         };
 
         /**
-         * Autocompletion docs count
-         */
-        this.autocompletion.count = ko.computed(function() {
-            return self.autocompletion.documents().length;
-        });
-
-        /**
-         * Autocompletion visibility
-         */
-        this.autocompletion.visible = ko.computed(function() {
-            return self.autocompletion.documents().length && !self.autocompletion.loading();
-        });
-
-        /**
-         *
+         * Filter instance exemplar
          * @param {type} scope
          */
         this._filter_model = function( scope ) {
 
+          /**
+           * Reference to this
+           * @type @this;
+           */
           var self = this;
 
           /**
-           *
+           * Current scope
            */
           this.scope = scope;
 
           /**
            * Filtered documents collection
            */
-          this.documents = ko.observableArray([]);
+          this.documents = ko.observableArray( [] );
 
           /**
            * Total filtered documents
            */
-          this.total = ko.observable(0);
+          this.total = ko.observable( 0 );
 
           /**
            * Filter facets collection
            */
-          this.facets = ko.observableArray([]);
+          this.facets = ko.observableArray( [] );
 
           /**
            * More button docs count
            */
-          this.moreCount = ko.observable(0);
+          this.moreCount = ko.observable( 0 );
 
           /**
            * Human facet labels
            */
-          this.facetLabels = ko.observable({});
+          this.facetLabels = ko.observable( {} );
 
           /**
            * Filtered docs count
@@ -197,6 +205,14 @@
           this[scopes[i]] = new this._filter_model( scopes[i] );
         }
 
+        /**
+         *
+         * @type type
+         */
+        for ( var j in suggesters ) {
+          this[suggesters[j]] = new this._suggester_model( suggesters[j] );
+        }
+
       },
 
       /**
@@ -213,57 +229,57 @@
           /**
            * Default settings
            */
-          settings: {
+          settings: function() {
 
             /**
              * Minimum number of chars to start search for
              */
-            min_chars: 3,
+            this.min_chars = 3;
 
             /**
              * Fields to return
              */
-            return_fields: [
+            this.return_fields = [
               'post_title',
               'permalink'
-            ],
+            ];
 
             /**
              * Fields to search on
              */
-            search_fields: ['post_title'],
+            this.search_fields = ['post_title'];
 
             /**
              * Typing timeout
              */
-            timeout: 100,
+            this.timeout = 100;
 
             /**
              * Doc types to search in
              */
-            document_type: {
+            this.document_type = {
               unknown:'Unknown'
             },
 
             /**
              * Default search direction
              */
-            sort_dir:'asc',
+            this.sort_dir = 'asc';
 
             /**
              * Default request size
              */
-            size:20,
+            this.size = 20;
 
             /**
              * Autocompletion form selector
              */
-            selector:'#autocompletion',
+            this.selector = '#autocompletion';
 
             /**
              * Ability to change query before execution
              */
-            custom_query: {}
+            this.custom_query = {};
           },
 
           /**
@@ -274,7 +290,7 @@
           /**
            * Build DSL query
            */
-          buildQuery: function( query_string ) {
+          buildQuery: function( query_string, scope ) {
 
             /**
              * Validate
@@ -286,8 +302,8 @@
             /**
              * Validate
              */
-            if ( !this.settings.search_fields ) {
-              _console.error( 'Autocompletion fields are empty', this.settings.search_fields );
+            if ( !this[scope].search_fields ) {
+              _console.error( 'Autocompletion fields are empty', this[scope].search_fields );
             }
 
             /**
@@ -298,23 +314,23 @@
                 multi_match:{
                   operator: "and",
                   query: query_string,
-                  fields: this.settings.search_fields
+                  fields: this[scope].search_fields
                 }
               },
-              fields: this.settings.return_fields,
+              fields: this[scope].return_fields,
               sort: {
                 _type: {
-                  order: this.settings.sort_dir
+                  order: this[scope].sort_dir
                 }
               },
-              size: this.settings.size
-            }, this.settings.custom_query );
+              size: this[scope].size
+            }, this[scope].custom_query );
           },
 
           /**
            * Autocomplete submit function
            */
-          submit: function( viewModel, element ) {
+          submit: function( viewModel, element, scope ) {
             _console.log( 'Typing search input', arguments );
 
             /**
@@ -327,9 +343,9 @@
             /**
              * Do nothing if not enough chars typed
              */
-            if ( element.val().length < this.settings.min_chars ) {
-              viewModel.autocompletion.loading(false);
-              viewModel.autocompletion.documents([]);
+            if ( element.val().length < this[scope].min_chars ) {
+              viewModel[scope].loading(false);
+              viewModel[scope].documents([]);
               return true;
             }
 
@@ -338,12 +354,12 @@
             /**
              * Activate loading
              */
-            viewModel.autocompletion.loading(true);
+            viewModel[scope].loading(true);
 
             /**
              * Configure API
              */
-            api.index( this.settings.index ).controllers( this.settings.controllers );
+            api.index( this[scope].index ).controllers( this[scope].controllers );
 
             /**
              * Run
@@ -358,17 +374,17 @@
               /**
                * Typing timeout
                */
-              this.settings.timeout,
+              this[scope].timeout,
 
               /**
                * Build and pass query
                */
-              this.buildQuery( element.val() ),
+              this.buildQuery( element.val(), scope ),
 
               /**
                * Types
                */
-              Object.keys(this.settings.document_type),
+              Object.keys(this[scope].document_type),
 
               /**
                * Success handler
@@ -379,8 +395,8 @@
               function( data, xhr ) {
                 _console.debug( 'Autocompletion Search Success', arguments );
 
-                viewModel.autocompletion.documents( data.hits.hits );
-                viewModel.autocompletion.loading(false);
+                viewModel[scope].documents( data.hits.hits );
+                viewModel[scope].loading(false);
               },
 
               /**
@@ -389,7 +405,7 @@
               function() {
                 _console.error( 'Autocompletion Search Error', arguments );
 
-                viewModel.autocompletion.loading(false);
+                viewModel[scope].loading(false);
               }
             );
           },
@@ -404,23 +420,29 @@
               /**
                * Suggest binding object to work with
                */
-              Suggest = bindings.elasticSuggest;
+              Suggest = bindings.elasticSuggest,
+
+              /**
+               *
+               * @type @exp;form@call;data
+               */
+              scope = $(element).data( 'suggest' );
 
             /**
              * Apply settings passed
              */
-            Suggest.settings = $.extend( Suggest.settings, valueAccessor() );
+            Suggest[scope] = $.extend( new Suggest.settings, valueAccessor() );
 
             /**
              * Set types
              */
-            viewModel.autocompletion.types( Suggest.settings.document_type );
+            viewModel[scope].types( Suggest[scope].document_type );
 
             /**
              * Fire autocomplete function on input typing
              */
             $(element).on('keyup', function(){
-              Suggest.submit( viewModel, $(this) );
+              Suggest.submit( viewModel, $(this), scope );
             });
 
             /**
@@ -436,9 +458,9 @@
              * Control dropdown visibility
              */
             $('html').on('click', function(){
-              viewModel.autocompletion.documents([]);
+              viewModel[scope].documents([]);
             });
-            $(Suggest.settings.selector).on('click', function(e){
+            $(Suggest[scope].selector).on('click', function(e){
               e.stopPropagation();
             });
           }
@@ -971,8 +993,14 @@
            */
           settings: function() {
 
+            /**
+             * Button class selector
+             */
             this.button_class = 'df_element';
 
+            /**
+             * Active button class
+             */
             this.active_button_class = 'df_sortable_active';
           },
 
@@ -1044,8 +1072,14 @@
            */
           settings: function() {
 
+            /**
+             * Button class selector
+             */
             this.button_class = 'df_element';
 
+            /**
+             * Active button selector
+             */
             this.active_button_class = 'df_sortable_active';
           },
 
@@ -1113,6 +1147,9 @@
            */
           settings: function() {
 
+            /**
+             * Show more count
+             */
             this.count = 10;
 
           },
@@ -1315,13 +1352,17 @@
             scopes.push( $( this ).data('scope') );
           }
         });
-        _console.log( scopes );
+        _console.log( 'Filters enabled', scopes );
 
-        /**
-         * Apply view model
-         * @todo: load scopes dynamicaly
-         */
-        ko.applyBindings( new viewModel( scopes ), self[0] );
+        var suggesters = [];
+        $( '[data-suggest]', self[0] ).each( function() {
+          if ( suggesters.indexOf( $( this ).data('suggest') ) < 0 ) {
+            suggesters.push( $( this ).data('suggest') );
+          }
+        });
+        _console.log( 'Suggesters enabled', suggesters );
+
+        ko.applyBindings( new viewModel( scopes, suggesters ), self[0] );
 
         return self;
       };

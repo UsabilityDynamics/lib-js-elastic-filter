@@ -6,6 +6,9 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 2.5 =
+* Re-factoring of suggester in order to make it possible to add multiple instances on a page. 
+
 = Version 2.0 =
 * Re-factoring in order to make possible to use multiple filters on one page.
 
