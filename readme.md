@@ -6,6 +6,9 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 2.6 =
+* Added option that allows to use fields-independent full-text search for Suggester.
+
 = Version 2.5 =
 * Re-factoring of suggester in order to make it possible to add multiple instances on a page. 
 

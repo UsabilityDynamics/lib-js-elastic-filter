@@ -1,7 +1,7 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
- * @version 2.5
+ * @version 2.6
  *
  * Copyright © 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
@@ -247,7 +247,7 @@
             /**
              * Fields to search on
              */
-            this.search_fields = ['post_title'];
+            this.search_fields = [];
 
             /**
              * Typing timeout
@@ -299,24 +299,8 @@
               _console.error( 'Wrong query string', query_string );
             }
 
-            /**
-             * Validate
-             */
-            if ( !this[scope].search_fields ) {
-              _console.error( 'Autocompletion fields are empty', this[scope].search_fields );
-            }
-
-            /**
-             * Return query object with the ability to extend or change it
-             */
-            return $.extend({
-              query:{
-                multi_match:{
-                  operator: "and",
-                  query: query_string,
-                  fields: this[scope].search_fields
-                }
-              },
+            var _query = {
+              query:{},
               fields: this[scope].return_fields,
               sort: {
                 _type: {
@@ -324,7 +308,41 @@
                 }
               },
               size: this[scope].size
-            }, this[scope].custom_query );
+            };
+
+            /**
+             * Determine search type
+             */
+            if ( this[scope].search_fields.length ) {
+
+              /**
+               * Multi-match if fields exist
+               */
+              _query.query.multi_match = {
+                operator: "and",
+                query: query_string,
+                fields: this[scope].search_fields
+              };
+
+            } else {
+
+              /**
+               * Query String if no fileds passed
+               */
+              _query.query.filtered = {
+                query: {
+                  query_string: {
+                    query: query_string
+                  }
+                }
+              };
+
+            }
+
+            /**
+             * Return query object with the ability to extend or change it
+             */
+            return $.extend( _query, this[scope].custom_query );
           },
 
           /**
