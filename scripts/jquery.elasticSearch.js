@@ -253,11 +253,6 @@
             ];
 
             /**
-             * Fields to search on
-             */
-            this.search_fields = [];
-
-            /**
              * Typing timeout
              */
             this.timeout = 100;
@@ -308,7 +303,18 @@
             }
 
             var _query = {
-              query:{},
+              query: {
+                filtered: {
+                  query: {
+                    match: {
+                      _all: {
+                        query: query_string,
+                        operator: "and"
+                      }
+                    }
+                  }
+                }
+              },
               fields: this[scope].return_fields,
               sort: {
                 _type: {
@@ -317,35 +323,6 @@
               },
               size: this[scope].size
             };
-
-            /**
-             * Determine search type
-             */
-            if ( this[scope].search_fields.length ) {
-
-              /**
-               * Multi-match if fields exist
-               */
-              _query.query.multi_match = {
-                operator: "and",
-                query: query_string,
-                fields: this[scope].search_fields
-              };
-
-            } else {
-
-              /**
-               * Query String if no fileds passed
-               */
-              _query.query.filtered = {
-                query: {
-                  query_string: {
-                    query: query_string
-                  }
-                }
-              };
-
-            }
 
             /**
              * Return query object with the ability to extend or change it
