@@ -139,6 +139,14 @@
           this.visible = ko.computed(function() {
             return self.documents().length && !self.loading();
           });
+
+          /**
+           * Clear search input
+           */
+          this.clear = function() {
+            _console.log( 'Clear', self );
+            $('[data-suggest="'+self.scope+'"]').val('').keyup().change();
+          };
         };
 
         /**
@@ -498,7 +506,7 @@
             /**
              * Time point for present. Will be used for period filtering.
              */
-            this.middle_timepoint ={
+            this.middle_timepoint = {
               gte: 'now',
               lte: 'now'
             };
@@ -828,14 +836,22 @@
                 viewModel.total( data.hits.total );
 
                 /**
-                 * Update facets
+                 * Update facets when needed
                  */
-                viewModel.facets([]);
                 if ( typeof data.facets !== 'undefined' ) {
+
+                  var _total = 0;
                   $.each( data.facets, function( key, value ) {
-                    value.key = key;
-                    viewModel.facets.push(value);
+                    _total += value.total;
                   });
+
+                  if ( _total ) {
+                    viewModel.facets([]);
+                    $.each( data.facets, function( key, value ) {
+                      value.key = key;
+                      viewModel.facets.push(value);
+                    });
+                  }
                 }
 
                 /**
