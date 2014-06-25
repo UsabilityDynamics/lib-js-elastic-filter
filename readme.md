@@ -6,6 +6,12 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 2.7 =
+* New property to Suggester - has_text.
+* Improved search logic in Suggester.
+* Make facets update only if needed.
+* Abort XHR if already ran.
+
 = Version 2.6 =
 * Added option that allows to use fields-independent full-text search for Suggester.
 
