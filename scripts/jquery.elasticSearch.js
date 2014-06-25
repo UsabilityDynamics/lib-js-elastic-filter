@@ -1,7 +1,7 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
- * @version 2.6
+ * @version 2.7
  *
  * Copyright © 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
@@ -112,6 +112,11 @@
           this.scope = scope;
 
           /**
+           * Manual notifier
+           */
+          this._notify = ko.observable();
+
+          /**
            * Documents Collection
            */
           this.documents = ko.observableArray( [] );
@@ -134,17 +139,28 @@
           });
 
           /**
+           * Whether has text in input or not
+           */
+          this.has_text = ko.computed(function() {
+            $('[data-suggest="'+self.scope+'"]').one('keyup', function(){
+              self._notify.notifySubscribers();
+            });
+            self._notify();
+            return $('[data-suggest="'+self.scope+'"]').val().length;
+          });
+
+          /**
            * Autocompletion visibility
+           * @todo: get rid of hardcoded 3
            */
           this.visible = ko.computed(function() {
-            return self.documents().length && !self.loading();
+            return self.has_text() && $('[data-suggest="'+self.scope+'"]').val().length >= 3; //&& !self.loading();
           });
 
           /**
            * Clear search input
            */
           this.clear = function() {
-            _console.log( 'Clear', self );
             $('[data-suggest="'+self.scope+'"]').val('').keyup().change();
           };
         };
@@ -460,10 +476,11 @@
             /**
              * Control dropdown visibility
              */
-            $('html').on('click', function(){
+            $('html').on('click', function() {
               viewModel[scope].documents([]);
+              $('[data-suggest="'+scope+'"]').val('').keyup().change();
             });
-            $(Suggest[scope].selector).on('click', function(e){
+            $( Suggest[scope].selector ).on('click', function(e) {
               e.stopPropagation();
             });
           }
@@ -1306,9 +1323,12 @@
             type = '';
           }
 
-          if ( client )
-            client.get( api._index+'/'+type+'/'+api._controllers.search, 'source='+encodeURIComponent(JSON.stringify( query )), success, error );
-          else _console.error( 'API Search Error', 'Client is undefined' );
+          if ( client ) {
+            if ( typeof this.ejs_xhr !== 'undefined' ) this.ejs_xhr.abort();
+            this.ejs_xhr = client.get( api._index+'/'+type+'/'+api._controllers.search, 'source='+encodeURIComponent(JSON.stringify( query )), success, error );
+          } else {
+            _console.error( 'API Search Error', 'Client is undefined' );
+          }
 
           return api;
         }
