@@ -151,10 +151,9 @@
 
           /**
            * Autocompletion visibility
-           * @todo: get rid of hardcoded 3
            */
           this.visible = ko.computed(function() {
-            return self.has_text() && $('[data-suggest="'+self.scope+'"]').val().length >= 3; //&& !self.loading();
+            return self.has_text() && $('[data-suggest="'+self.scope+'"]').val().length >= (function() { return bindings.elasticSuggest[self.scope].min_chars; }());
           });
 
           /**
