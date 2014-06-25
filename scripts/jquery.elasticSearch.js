@@ -424,7 +424,12 @@
                 _console.error( 'Autocompletion Search Error', arguments );
 
                 viewModel[scope].loading(false);
-              }
+              },
+
+              /**
+               * Whether about other requests or not
+               */
+              true
             );
           },
 
@@ -864,7 +869,13 @@
               function() {
                 _console.error('Filter Error', arguments);
                 self.loader.hide();
-              }
+              },
+
+              /**
+               * Whether about other requests or not
+               * @param {type} scope
+               */
+              false
             );
 
           },
@@ -1314,7 +1325,7 @@
          * @param {type} error
          *
          */
-        search: function( query, type, success, error ) {
+        search: function( query, type, success, error, abort ) {
           _console.log( 'API', api );
           _console.log( 'API Search', arguments );
 
@@ -1323,7 +1334,7 @@
           }
 
           if ( client ) {
-            if ( typeof this.ejs_xhr !== 'undefined' ) this.ejs_xhr.abort();
+            if ( typeof this.ejs_xhr !== 'undefined' && abort ) this.ejs_xhr.abort();
             this.ejs_xhr = client.get( api._index+'/'+type+'/'+api._controllers.search, 'source='+encodeURIComponent(JSON.stringify( query )), success, error );
           } else {
             _console.error( 'API Search Error', 'Client is undefined' );
