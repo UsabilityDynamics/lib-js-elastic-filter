@@ -8,6 +8,7 @@ Changelog
 
 = Version 2.8 =
 * Added virtual elements support for 'html' KO binding.
+* Removed hardcoded values.
 
 = Version 2.7 =
 * New property to Suggester - has_text.
