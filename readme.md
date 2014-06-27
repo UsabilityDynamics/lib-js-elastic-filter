@@ -6,6 +6,9 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 2.8 =
+* Added virtual elements support for 'html' KO binding.
+
 = Version 2.7 =
 * New property to Suggester - has_text.
 * Improved search logic in Suggester.
