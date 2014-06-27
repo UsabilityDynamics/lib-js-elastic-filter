@@ -427,7 +427,7 @@
               },
 
               /**
-               * Whether about other requests or not
+               * Whether abort other requests or not
                */
               true
             );
@@ -872,7 +872,7 @@
               },
 
               /**
-               * Whether about other requests or not
+               * Whether abort other requests or not
                * @param {type} scope
                */
               false
