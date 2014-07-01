@@ -1,0 +1,17 @@
+{
+  "name": "lib-js-elastic-filter",
+  "version": "2.8.0",
+  "description": "ElasticSearch filter implementation",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UsabilityDynamics/lib-js-elastic-filter"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "dependencies": {
+    "grunt": "~0.4.2",
+    "grunt-mocha-test": "0.11.0"
+  }
+}
