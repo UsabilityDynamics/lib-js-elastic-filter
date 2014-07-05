@@ -113,15 +113,56 @@ describe('ElasticSearch', function() {
   var sm = new window.elasticSearchVM._suggester_model( 'test_scope' );
   describe('#SuggesterModel', function(){
 
-    it('should contain scope property equal to "test_scope"', function(){
+    it('should contain "scope" property equal to "test_scope"', function(){
       assert.property(sm, 'scope');
       assert.equal(sm.scope, 'test_scope');
     });
 
-    it('should contain documents property typeof function', function(){
+    it('should contain "_notify" property', function(){
+      assert.property(sm, '_notify');
+    });
+
+    it('should contain "documents" property typeof function and equal to []', function(){
       assert.property(sm, 'documents');
       assert.typeOf(sm.documents, 'function');
+      assert.deepEqual(sm.documents(), []);
     });
+
+    it('should contain "types" property typeof function and equal to {}', function(){
+      assert.property(sm, 'types');
+      assert.typeOf(sm.types, 'function');
+      assert.deepEqual(sm.types(), {});
+    });
+
+    it('should contain "loading" property equal to false', function(){
+      assert.property(sm, 'loading');
+      assert.isFalse(sm.loading());
+    });
+
+    it('should contain "count" property typeof function and equal to actual count of documents', function(){
+      assert.property(sm, 'count');
+      assert.typeOf(sm.count, 'function');
+      sm.documents([]);
+      assert.equal(sm.count(), 0);
+      sm.documents([1,2,3]);
+      assert.equal(sm.count(), 3);
+    });
+
+    it('should contain "has_text" property equal to false', function(){
+      assert.property(sm, 'has_text');
+      assert.isFalse(sm.has_text());
+    });
+
+    it('should contain "visible" property equal to false', function(){
+      assert.property(sm, 'visible');
+      assert.isFalse(sm.visible());
+    });
+
+    it('should contain "clear" property typeof function', function(){
+      assert.property(sm, 'clear');
+      assert.typeOf(sm.clear, 'function');
+    });
+
   });
 
 

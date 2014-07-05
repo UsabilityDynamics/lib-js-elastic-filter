@@ -148,7 +148,7 @@
               self._notify.notifySubscribers();
             });
             self._notify();
-            return typeof $('[data-suggest="'+self.scope+'"]').val() !== 'undefined' ? $('[data-suggest="'+self.scope+'"]').val().length : 0;
+            return typeof $('[data-suggest="'+self.scope+'"]').val() !== 'undefined' ? $('[data-suggest="'+self.scope+'"]').val().length : false;
           });
 
           /**
