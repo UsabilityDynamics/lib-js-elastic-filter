@@ -95,6 +95,8 @@
        */
       viewModel = function( scopes, suggesters ) {
 
+        window.elasticSearchVM = this;
+
         /**
          * Autocompletion Object
          */

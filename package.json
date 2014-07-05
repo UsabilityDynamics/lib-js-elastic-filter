@@ -3,6 +3,7 @@
   "version": "2.8.0",
   "description": "ElasticSearch filter implementation",
   "private": true,
+  "main": "./scripts/jquery.elasticSearch",
   "repository": {
     "type": "git",
     "url": "https://github.com/UsabilityDynamics/lib-js-elastic-filter"
@@ -11,7 +12,13 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
-    "grunt": "~0.4.2",
-    "grunt-mocha-test": "0.11.0"
+    "js-http-client": "UsabilityDynamics/lib-js-http-client"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "jsdom": "*",
+    "jquery": "*",
+    "knockout": "*"
   }
 }

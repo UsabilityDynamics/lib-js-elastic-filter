@@ -1,6 +1,7 @@
 temp
 node_modules
 npm-debug.log
+build
 
 .svn
 .idea
