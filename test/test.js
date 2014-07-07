@@ -1,22 +1,38 @@
+// Main scripts
 var jsdom = require("jsdom");
 var chai = require("chai");
 var assert = chai.assert;
 
+// do jQuery
 global.window = jsdom.jsdom().parentWindow;
 global.jQuery = require("jquery");
 
+// Require KO
 global.ko = require("knockout");
 
+// Init HTTP Client
 global.ejs = require("../node_modules/js-http-client/scripts/js-http-client");
 
+/**
+ * Emulate debug function
+ * @param {type} a
+ * @param {type} b
+ * @returns {undefined}
+ */
 console.debug = function(a, b) {
   console.log(a, b);
 };
 
+// Include plugin
 require("../scripts/jquery.elasticSearch");
 
+// Create body
 var body = window.document.createElement('body');
 
+/**
+ * Initialize with dummy data
+ * @param {type} param
+ */
 jQuery(body).elasticSearch({
   debug: false,
   endpoint: 'http://127.0.0.1:9200/',

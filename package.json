@@ -1,6 +1,6 @@
 {
   "name": "lib-js-elastic-filter",
-  "version": "2.8.0",
+  "version": "3.0.0",
   "description": "ElasticSearch filter implementation",
   "private": true,
   "main": "./scripts/jquery.elasticSearch",
