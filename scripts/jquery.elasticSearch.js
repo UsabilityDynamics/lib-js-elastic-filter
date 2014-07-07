@@ -1513,7 +1513,7 @@
    * @param {type} target
    * @returns {unresolved}
    */
-  var cleanObject = function ( target ) {
+  var cleanObject = $.fn.cleanObject = function ( target ) {
     Object.keys( target ).map( function ( key ) {
       if ( target[ key ] instanceof Object ) {
         if ( ! Object.keys( target[ key ] ).length && typeof target[ key ].getMonth !== 'function') {

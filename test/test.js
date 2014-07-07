@@ -337,6 +337,63 @@ describe('ElasticSearch', function() {
 
   });
 
+  /**
+   * Test Helpers
+   * @returns {undefined}
+   */
+  describe('#Helpers', function(){
+
+    /**
+     * Test form serializer
+     * @returns {undefined}
+     */
+    describe('#serializeObject', function(){
+
+      it('should correctly convert form data to JavaScript Object', function(){
+        assert.deepEqual(
+          jQuery(body)
+            .append('<form><input name="test[bar]" value="bar" /><input name="test[foo]" value="foo" /><input name="test[bar][foo]" value="bar_foo" /></form>')
+            .find('form')
+            .serializeObject(),
+          {
+            test: {
+              bar: {
+                foo: 'bar_foo'
+              },
+              foo: 'foo'
+            }
+          }
+        );
+      });
+
+    });
+
+    /**
+     * Test object cleaner
+     * @returns {undefined}
+     */
+    describe('#cleanObject', function(){
+
+      it('should clean objects from empty values', function(){
+        assert.deepEqual( jQuery().cleanObject(
+          {
+            foo: {},
+            bar: {
+              foo: {},
+              bar: {
+                foo: 10,
+                bar: 0,
+                tee: {}
+              }
+            }
+          }
+        ), { bar: { bar: { foo: 10, bar: 0 } } } );
+      });
+
+    });
+
+  });
+
 });
 
 /** WIP */
