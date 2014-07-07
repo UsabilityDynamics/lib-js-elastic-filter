@@ -460,7 +460,7 @@
             /**
              * Apply settings passed
              */
-            Suggest[scope] = $.extend( new Suggest.settings, valueAccessor() );
+            Suggest[scope] = $.extend( new Suggest.settings(), valueAccessor() );
 
             /**
              * Set types
@@ -479,8 +479,9 @@
              */
             $(element).keypress(function(e) {
               var code = e.keyCode || e.which;
-              if(code == 13)
+              if(code === 13) {
                 return false;
+              }
             });
 
             /**
