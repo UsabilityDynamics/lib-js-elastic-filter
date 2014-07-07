@@ -116,7 +116,7 @@
           /**
            * Manual notifier
            */
-          this._notify = typeof ko !== 'undefined' ? ko.observable() : null;
+          this._notify = ko.observable();
 
           /**
            * Documents Collection
@@ -227,7 +227,9 @@
          * Init by scopes
          */
         for ( var i in scopes ) {
-          this[scopes[i]] = new this._filter_model( scopes[i] );
+          if ( scopes.hasOwnProperty(i) ) {
+            this[scopes[i]] = new this._filter_model( scopes[i] );
+          }
         }
 
         /**
@@ -235,7 +237,9 @@
          * @type type
          */
         for ( var j in suggesters ) {
-          this[suggesters[j]] = new this._suggester_model( suggesters[j] );
+          if ( suggesters.hasOwnProperty(j) ) {
+            this[suggesters[j]] = new this._suggester_model( suggesters[j] );
+          }
         }
 
       },
