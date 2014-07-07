@@ -3,7 +3,7 @@
  *
  * @version 3.0.0
  *
- * Copyright © 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
+ * Copyright 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -28,6 +28,8 @@
    * @returns {@this;|_L6.$.fn.ddpElasticSuggest}
    */
   $.fn.elasticSearch = function( settings ) {
+
+    ko = ko || {};
 
     var
 
