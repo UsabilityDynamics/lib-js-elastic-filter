@@ -264,8 +264,6 @@ describe('ElasticSearch', function() {
      */
     describe('#elasticFilter', function() {
 
-      console.log(esb.elasticFilter);
-
       it('init - OK', function() {
         assert.property(esb.elasticFilter, 'init');
         assert.typeOf(esb.elasticFilter.init, 'function');
