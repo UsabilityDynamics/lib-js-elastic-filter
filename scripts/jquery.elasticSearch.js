@@ -29,7 +29,7 @@
    */
   $.fn.elasticSearch = function( settings ) {
 
-    ko = ko || {};
+    window.ko = typeof window.ko !== 'undefined' ? ko : {};
 
     var
 
