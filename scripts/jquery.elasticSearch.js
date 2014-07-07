@@ -244,7 +244,7 @@
        * Knockout custom bindings
        * @type Object
        */
-      bindings = {
+      bindings = window.elasticSearchBindings = {
 
         /**
          * Suggester for sitewide search
@@ -631,7 +631,7 @@
             /**
              * Get form filter data
              */
-            this[scope].current_filters = this[scope].form.serializeObject();
+            this[scope].current_filters = this[scope].form ? this[scope].form.serializeObject() : {};
 
             /**
              * Clean object from empty/null values
