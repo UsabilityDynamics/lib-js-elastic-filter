@@ -29,8 +29,6 @@
    */
   $.fn.elasticSearch = function( settings ) {
 
-    window.ko = typeof window.ko !== 'undefined' ? ko : {};
-
     var
 
       /**
@@ -118,7 +116,7 @@
           /**
            * Manual notifier
            */
-          this._notify = ko.observable();
+          this._notify = typeof ko !== 'undefined' ? ko.observable() : null;
 
           /**
            * Documents Collection
