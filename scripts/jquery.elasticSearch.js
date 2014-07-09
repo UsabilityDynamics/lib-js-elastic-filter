@@ -669,7 +669,7 @@
                      gte:this[scope].middle_timepoint.gte
                   };
 
-                  filter['bool']['must'].push( period );
+                  filter.bool.must.push( period );
 
                   break;
 
@@ -679,7 +679,7 @@
                      lte:this[scope].middle_timepoint.lte
                   };
 
-                  filter['bool']['must'].push( period );
+                  filter.bool.must.push( period );
 
                   break;
 
@@ -693,7 +693,7 @@
             if ( !$.isEmptyObject( this[scope].current_filters[this[scope].date_range_input] ) ) {
               var range = { range: {} };
               range.range[this[scope].period_field] = this[scope].current_filters[this[scope].date_range_input];
-              filter['bool']['must'].push( range );
+              filter.boolm.must.push( range );
             }
 
             /**
@@ -704,7 +704,7 @@
                 if ( value !== "0" ) {
                   var _term = {};
                   _term[key] = value;
-                  filter['bool']['must'].push({
+                  filter.bool.must.push({
                     term: _term
                   });
                 }
@@ -740,8 +740,8 @@
                   _geo_distance[this[scope].location_field] = {
                     lat: lat, lon: lon
                   };
-                  _geo_distance['order'] = this[scope].sort_dir;
-                  _geo_distance['unit'] = "m";
+                  _geo_distance.order = this[scope].sort_dir;
+                  _geo_distance.unit = "m";
 
                   sort.push({
                     _geo_distance: _geo_distance
@@ -929,7 +929,7 @@
             if ( typeof Filter[scope] === 'undefined' ) {
               Filter[scope] = {};
             }
-            Filter[scope]                  = $.extend( new Filter.settings, valueAccessor() );
+            Filter[scope]                  = $.extend( new Filter.settings(), valueAccessor() );
             Filter.loader                  = $( Filter[scope].loader_selector );
             Filter[scope].form             = form;
             Filter[scope].initial_per_page = Filter[scope].per_page;
@@ -1075,7 +1075,7 @@
             /**
              * Set settings
              */
-            Sorter[scope] = $.extend( new Sorter.settings, valueAccessor() );
+            Sorter[scope] = $.extend( new Sorter.settings(), valueAccessor() );
 
             /**
              * Bind buttons events
@@ -1154,7 +1154,7 @@
             /**
              * Set settings
              */
-            Time[scope] = $.extend( new Time.settings, valueAccessor() );
+            Time[scope] = $.extend( new Time.settings(), valueAccessor() );
 
             /**
              * Bind button events
@@ -1225,7 +1225,7 @@
             /**
              * Set settings
              */
-            ShowMore[scope]         = $.extend( new ShowMore.settings, valueAccessor() );
+            ShowMore[scope]         = $.extend( new ShowMore.settings(), valueAccessor() );
             viewModel[scope].moreCount( ShowMore[scope].count );
 
             /**
@@ -1305,8 +1305,9 @@
         index: function( index ) {
           _console.debug( 'API Index extend', index );
 
-          if ( index )
+          if ( index ) {
             this._index = index;
+          }
 
           return this;
         },
@@ -1341,7 +1342,9 @@
           }
 
           if ( client ) {
-            if ( typeof this.ejs_xhr !== 'undefined' && abort ) this.ejs_xhr.abort();
+            if ( typeof this.ejs_xhr !== 'undefined' && abort ) {
+              this.ejs_xhr.abort();
+            }
             this.ejs_xhr = client.get( api._index+'/'+type+'/'+api._controllers.search, 'source='+encodeURIComponent(JSON.stringify( query )), success, error );
           } else {
             _console.error( 'API Search Error', 'Client is undefined' );
