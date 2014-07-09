@@ -659,6 +659,54 @@
           },
 
           /**
+           *
+           */
+          determineDateRange: function( scope ) {
+            var range = { range: {} };
+
+            range.range[this[scope].period_field] = this[scope].current_filters[this[scope].date_range_input];
+
+            return range;
+          },
+
+          /**
+           *
+           */
+          buildSortOptions: function( scope ) {
+            var sort_type = {};
+
+            switch( this[scope].sort_by ) {
+
+              case 'distance':
+
+                var lat = Number($.cookie('elasticSearch_latitude'))?Number($.cookie('elasticSearch_latitude')):0;
+                var lon = Number($.cookie('elasticSearch_longitude'))?Number($.cookie('elasticSearch_longitude')):0;
+
+                var _geo_distance = {};
+                _geo_distance[this[scope].location_field] = {
+                  lat: lat, lon: lon
+                };
+                _geo_distance.order = this[scope].sort_dir;
+                _geo_distance.unit = "m";
+
+                return {
+                  _geo_distance: _geo_distance
+                };
+
+                break;
+              default:
+
+                sort_type[this[scope].sort_by] = {
+                  order: this[scope].sort_dir
+                };
+
+                return sort_type;
+
+                break;
+            }
+          },
+
+          /**
            * DSL Query builder function
            * @return DSL object that should be passed as query argument to ElasticSearch
            */
@@ -702,9 +750,8 @@
              * Determine date range if is set
              */
             if ( !$.isEmptyObject( this[scope].current_filters[this[scope].date_range_input] ) ) {
-              var range = { range: {} };
-              range.range[this[scope].period_field] = this[scope].current_filters[this[scope].date_range_input];
-              filter.boolm.must.push( range );
+              var range = this.determineDateRange( scope );
+              filter.bool.must.push( range );
             }
 
             /**
@@ -738,37 +785,7 @@
              */
             var sort = [];
             if ( this[scope].sort_by ) {
-
-              var sort_type = {};
-
-              switch( this[scope].sort_by ) {
-
-                case 'distance':
-
-                  var lat = Number($.cookie('elasticSearch_latitude'))?Number($.cookie('elasticSearch_latitude')):0;
-                  var lon = Number($.cookie('elasticSearch_longitude'))?Number($.cookie('elasticSearch_longitude')):0;
-
-                  var _geo_distance = {};
-                  _geo_distance[this[scope].location_field] = {
-                    lat: lat, lon: lon
-                  };
-                  _geo_distance.order = this[scope].sort_dir;
-                  _geo_distance.unit = "m";
-
-                  sort.push({
-                    _geo_distance: _geo_distance
-                  });
-
-                  break;
-                default:
-
-                  sort_type[this[scope].sort_by] = {
-                    order: this[scope].sort_dir
-                  };
-                  sort.push(sort_type);
-
-                  break;
-              }
+              sort.push( this.buildSortOptions( scope ) );
             }
 
             /**
