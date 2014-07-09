@@ -930,44 +930,11 @@
           },
 
           /**
-           * Initialize elasticFilter binding
+           *
+           * @param {type} Filter
+           * @param {type} scope
            */
-          init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            _console.debug( 'elasticFilterFacets init', [ element, valueAccessor, allBindings, viewModel, bindingContext ] );
-
-            var
-              /**
-               * Filter object to work with
-               */
-              Filter  = bindings.elasticFilter,
-
-              /**
-               * Filter form
-               */
-              form    = $( element ),
-
-              /**
-               * Filter controls
-               */
-              filters = $( 'input,select', form );
-
-            /**
-             * Define Scope
-             */
-            var scope = form.data( 'scope' );
-
-            /**
-             * Define settings
-             */
-            if ( typeof Filter[scope] === 'undefined' ) {
-              Filter[scope] = {};
-            }
-            Filter[scope]                  = $.extend( new Filter.settings(), valueAccessor() );
-            Filter.loader                  = $( Filter[scope].loader_selector );
-            Filter[scope].form             = form;
-            Filter[scope].initial_per_page = Filter[scope].per_page;
-            viewModel[scope].facetLabels( Filter[scope].facets );
-
+          determineCoords: function( Filter, scope ) {
             /**
              * If no coords passed
              */
@@ -1027,6 +994,58 @@
               $.cookie('elasticSearch_latitude', Filter[scope].location.latitude );
               $.cookie('elasticSearch_longitude', Filter[scope].location.longitude );
             }
+          },
+
+
+          /**
+           * Initialize elasticFilter binding
+           * @param {type} element
+           * @param {type} valueAccessor
+           * @param {type} allBindings
+           * @param {type} viewModel
+           * @param {type} bindingContext
+           * @returns {unresolved}
+           */
+          init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            _console.debug( 'elasticFilterFacets init', [ element, valueAccessor, allBindings, viewModel, bindingContext ] );
+
+            var
+              /**
+               * Filter object to work with
+               */
+              Filter  = bindings.elasticFilter,
+
+              /**
+               * Filter form
+               */
+              form    = $( element ),
+
+              /**
+               * Filter controls
+               */
+              filters = $( 'input,select', form );
+
+            /**
+             * Define Scope
+             */
+            var scope = form.data( 'scope' );
+
+            /**
+             * Define settings
+             */
+            if ( typeof Filter[scope] === 'undefined' ) {
+              Filter[scope] = {};
+            }
+            Filter[scope]                  = $.extend( new Filter.settings(), valueAccessor() );
+            Filter.loader                  = $( Filter[scope].loader_selector );
+            Filter[scope].form             = form;
+            Filter[scope].initial_per_page = Filter[scope].per_page;
+            viewModel[scope].facetLabels( Filter[scope].facets );
+
+            /**
+             *
+             */
+            Filter.determineCoords( Filter, scope );
 
             /**
              * Render new facets
