@@ -17,6 +17,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* global ko */
+
 ;(function( $ ) {
 
   "use strict";
