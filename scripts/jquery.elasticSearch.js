@@ -20,6 +20,7 @@
 /* jshint maxparams: 6 */
 /* global ko */
 /* global ejs */
+/* jshint -W030 */
 
 ;(function( $ ) {
 
@@ -674,6 +675,7 @@
            */
           buildSortOptions: function( scope ) {
             var sort_type = {};
+            var _return;
 
             switch( this[scope].sort_by ) {
 
@@ -689,7 +691,7 @@
                 _geo_distance.order = this[scope].sort_dir;
                 _geo_distance.unit = "m";
 
-                return {
+                _return = {
                   _geo_distance: _geo_distance
                 };
 
@@ -700,10 +702,12 @@
                   order: this[scope].sort_dir
                 };
 
-                return sort_type;
+                _return = sort_type;
 
                 break;
             }
+
+            return _return;
           },
 
           /**
