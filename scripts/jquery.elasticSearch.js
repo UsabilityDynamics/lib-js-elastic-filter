@@ -421,7 +421,7 @@
                * @param {type} xhr
                */
               function( data, xhr ) {
-                _console.debug( 'Autocompletion Search Success', arguments );
+                _console.debug( 'Autocompletion Search Success', [data, xhr] );
 
                 viewModel[scope].documents( data.hits.hits );
                 viewModel[scope].loading(false);
@@ -447,7 +447,7 @@
            * Suggester Initialization
            */
           init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            _console.debug( 'elasticSuggest init', arguments );
+            _console.debug( 'elasticSuggest init', [element, valueAccessor, allBindings, viewModel, bindingContext] );
 
             var
               /**
@@ -719,7 +719,8 @@
              * Build facets
              */
             var facets = {};
-            $.each( this[scope].facets, function( field, _ /* not used here */ ) {
+            $.each( this[scope].facets, function( field, val ) {
+              _console.log( 'Facets foreach', [ field, val ] );
               facets[field] = {
                 terms: { field: field, size: self[scope].facet_size }
               };
@@ -821,7 +822,7 @@
                * @param {type} xhr
                */
               function( data, xhr ) {
-                _console.log('Filter Success', arguments);
+                _console.log('Filter Success', [ data, xhr ]);
 
                 /**
                  * If is a result of More request then append hits to existing.
@@ -904,7 +905,7 @@
            * Initialize elasticFilter binding
            */
           init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            _console.debug( 'elasticFilterFacets init', arguments );
+            _console.debug( 'elasticFilterFacets init', [ element, valueAccessor, allBindings, viewModel, bindingContext ] );
 
             var
               /**
@@ -1057,7 +1058,7 @@
            * Initialize current binding
            */
           init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            _console.log( 'elasticSortControl Init', arguments );
+            _console.log( 'elasticSortControl Init', [ element, valueAccessor, allBindings, viewModel, bindingContext ] );
 
             var
               /**
@@ -1136,7 +1137,7 @@
            * Initialize current binding
            */
           init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            _console.log( 'elasticTimeControl Init', arguments );
+            _console.log( 'elasticTimeControl Init', [ element, valueAccessor, allBindings, viewModel, bindingContext ] );
 
             var
               /**
@@ -1207,7 +1208,7 @@
            * Initialize current binding
            */
           init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            _console.log( 'filterShowMoreControl init', arguments );
+            _console.log( 'filterShowMoreControl init', [ element, valueAccessor, allBindings, viewModel, bindingContext ] );
 
             var
               /**
