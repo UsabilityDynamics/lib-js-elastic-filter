@@ -627,6 +627,38 @@
           loader: null,
 
           /**
+           *
+           * @param {type} scope
+           */
+          determinePeriod: function( scope ) {
+
+            var period = { range: {} };
+
+            switch( this[scope].period ) {
+
+              case 'upcoming':
+
+                period.range[this[scope].period_field] = {
+                   gte:this[scope].middle_timepoint.gte
+                };
+
+                break;
+
+              case 'past':
+
+                period.range[this[scope].period_field] = {
+                   lte:this[scope].middle_timepoint.lte
+                };
+
+                break;
+
+              default: break;
+            }
+
+            return period;
+          },
+
+          /**
            * DSL Query builder function
            * @return DSL object that should be passed as query argument to ElasticSearch
            */
@@ -662,33 +694,8 @@
              * Determine filter period
              */
             if ( this[scope].period ) {
-
-              var period = { range: {} };
-
-              switch( this[scope].period ) {
-
-                case 'upcoming':
-
-                  period.range[this[scope].period_field] = {
-                     gte:this[scope].middle_timepoint.gte
-                  };
-
-                  filter.bool.must.push( period );
-
-                  break;
-
-                case 'past':
-
-                  period.range[this[scope].period_field] = {
-                     lte:this[scope].middle_timepoint.lte
-                  };
-
-                  filter.bool.must.push( period );
-
-                  break;
-
-                default: break;
-              }
+              var period = this.determinePeriod( scope );
+              filter.bool.must.push( period );
             }
 
             /**
@@ -1269,6 +1276,8 @@
            * Initialize binding
            */
           init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+            _console.log( 'foreachprop', [ element, valueAccessor, allBindings, viewModel, bindingContext ] );
+
             var value = ko.utils.unwrapObservable(valueAccessor()),
             properties = ko.bindingHandlers.foreachprop.transformObject(value);
             ko.applyBindingsToNode(element, { foreach: properties }, bindingContext);
