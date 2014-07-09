@@ -934,7 +934,7 @@
            * @param {type} Filter
            * @param {type} scope
            */
-          determineCoords: function( Filter, scope ) {
+          determineCoords: function( Filter, scope, viewModel ) {
             /**
              * If no coords passed
              */
@@ -1045,7 +1045,7 @@
             /**
              *
              */
-            Filter.determineCoords( Filter, scope );
+            Filter.determineCoords( Filter, scope, viewModel );
 
             /**
              * Render new facets
