@@ -19,6 +19,7 @@
 
 /* jshint maxparams: 6 */
 /* global ko */
+/* global ejs */
 
 ;(function( $ ) {
 
@@ -96,7 +97,7 @@
        * Global viewmodel
        * @type function
        */
-      viewModel = function( scopes, suggesters ) {
+      ViewModel = function( scopes, suggesters ) {
 
         window.elasticSearchVM = this;
 
@@ -1254,13 +1255,13 @@
            * @returns {Array}
            */
           transformObject: function (obj) {
-              var properties = [];
-              for (var key in obj) {
-                  if (obj.hasOwnProperty(key)) {
-                      properties.push({ key: key, value: obj[key] });
-                  }
+            var properties = [];
+            for (var key in obj) {
+              if (obj.hasOwnProperty(key)) {
+                properties.push({ key: key, value: obj[key] });
               }
-              return properties;
+            }
+            return properties;
           },
 
           /**
@@ -1383,7 +1384,9 @@
          * Register bindings
          */
         for( var i in bindings ) {
-          ko.bindingHandlers[i] = bindings[i];
+          if ( bindings.hasOwnProperty( i ) ) {
+            ko.bindingHandlers[i] = bindings[i];
+          }
         }
         _console.debug( 'Bindings registered', ko.bindingHandlers );
 
@@ -1394,8 +1397,10 @@
         _console.debug( 'Init Options', options );
 
         if ( options.headers ) {
-          for( var i in options.headers ) {
-            client.addHeader( i, options.headers[i] );
+          for( i in options.headers ) {
+            if ( options.headers.hasOwnProperty( i ) ) {
+              client.addHeader( i, options.headers[i] );
+            }
           }
         }
         _console.debug( 'Client init', client );
@@ -1420,9 +1425,9 @@
          * Virtualize 'html' binding. Needs to be able to use html binding with virtual elements.
          */
         {
-          var overridden = ko.bindingHandlers['html'].update;
+          var overridden = ko.bindingHandlers.html.update;
 
-          ko.bindingHandlers['html'].update = function(element, valueAccessor) {
+          ko.bindingHandlers.html.update = function(element, valueAccessor) {
             if (element.nodeType === 8) {
               var html = ko.utils.unwrapObservable(valueAccessor());
 
@@ -1435,8 +1440,9 @@
                 var parsedNodes = ko.utils.parseHtmlFragment(html);
                 if (parsedNodes) {
                   var endCommentNode = element.nextSibling;
-                  for (var i = 0, j = parsedNodes.length; i < j; i++)
+                  for (var i = 0, j = parsedNodes.length; i < j; i++) {
                     endCommentNode.parentNode.insertBefore(parsedNodes[i], endCommentNode);
+                  }
                 }
               }
             } else { // plain node
@@ -1444,12 +1450,12 @@
             }
           };
         }
-        ko.virtualElements.allowedBindings['html'] = true;
+        ko.virtualElements.allowedBindings.html = true;
 
         /**
          * Apply view model
          */
-        ko.applyBindings( new viewModel( scopes, suggesters ), self[0] );
+        ko.applyBindings( new ViewModel( scopes, suggesters ), self[0] );
 
         return self;
       };
