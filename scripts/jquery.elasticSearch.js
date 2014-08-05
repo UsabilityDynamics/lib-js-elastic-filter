@@ -966,7 +966,7 @@
                        */
                       localStorage.setItem( 'elasticSearch_latitude', position.coords.latitude );
                       localStorage.setItem( 'elasticSearch_longitude', position.coords.longitude );
-                      localStorage.setItem( 'elasticSearch_geo_expire', Math.round( Date.now()/1000 ) + 30 );
+                      localStorage.setItem( 'elasticSearch_geo_expire', Math.round( Date.now()/1000 ) + 3600 );
                       
                       _console.log( 'localStorage - elasticSearch_latitude', localStorage.getItem('elasticSearch_latitude') );
                       _console.log( 'localStorage - elasticSearch_longitude', localStorage.getItem('elasticSearch_longitude') );
@@ -998,7 +998,7 @@
                */
               localStorage.setItem( 'elasticSearch_latitude', Filter[scope].location.latitude );
               localStorage.setItem( 'elasticSearch_longitude', Filter[scope].location.longitude );
-              localStorage.setItem( 'elasticSearch_geo_expire', Math.round( Date.now()/1000 ) + 30 );
+              localStorage.setItem( 'elasticSearch_geo_expire', Math.round( Date.now()/1000 ) + 3600 );
               
               _console.log( 'localStorage - elasticSearch_latitude', localStorage.getItem('elasticSearch_latitude') );
               _console.log( 'localStorage - elasticSearch_longitude', localStorage.getItem('elasticSearch_longitude') );
