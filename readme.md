@@ -6,6 +6,9 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 3.0.1 =
+* Different minor fixes.
+
 = Version 3.0.0 =
 * Tests added.
 * Some code changed to ba able to test.
