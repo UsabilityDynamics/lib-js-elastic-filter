@@ -6,6 +6,9 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 3.0.2 =
+* Cookies replaced with localStorage.
+
 = Version 3.0.1 =
 * Different minor fixes.
 

@@ -1,7 +1,7 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
- * @version 3.0.1
+ * @version 3.0.2
  *
  * Copyright 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
@@ -681,8 +681,8 @@
 
               case 'distance':
 
-                var lat = Number($.cookie('elasticSearch_latitude'))?Number($.cookie('elasticSearch_latitude')):0;
-                var lon = Number($.cookie('elasticSearch_longitude'))?Number($.cookie('elasticSearch_longitude')):0;
+                var lat = Number( localStorage.getItem( 'elasticSearch_latitude' ) ) ? Number( localStorage.getItem( 'elasticSearch_latitude' ) ):0;
+                var lon = Number( localStorage.getItem( 'elasticSearch_longitude' ) ) ? Number( localStorage.getItem( 'elasticSearch_longitude' ) ):0;
 
                 var _geo_distance = {};
                 _geo_distance[this[scope].location_field] = {
@@ -943,7 +943,7 @@
               /**
                * If no coords in cookies
                */
-              if ( !Number( $.cookie('elasticSearch_latitude') ) || !Number( $.cookie('elasticSearch_longitude') ) ) {
+              if ( ( !Number( localStorage.getItem( 'elasticSearch_latitude' ) ) || !Number( localStorage.getItem( 'elasticSearch_longitude' ) ) ) || localStorage.getItem( 'elasticSearch_geo_expire' ) < ( Math.round( Date.now()/1000 ) ) ) {
 
                 /**
                  * If geo API exists
@@ -964,8 +964,13 @@
                       /**
                        * Remember coords
                        */
-                      $.cookie('elasticSearch_latitude', position.coords.latitude );
-                      $.cookie('elasticSearch_longitude', position.coords.longitude );
+                      localStorage.setItem( 'elasticSearch_latitude', position.coords.latitude );
+                      localStorage.setItem( 'elasticSearch_longitude', position.coords.longitude );
+                      localStorage.setItem( 'elasticSearch_geo_expire', Math.round( Date.now()/1000 ) + 30 );
+                      
+                      _console.log( 'localStorage - elasticSearch_latitude', localStorage.getItem('elasticSearch_latitude') );
+                      _console.log( 'localStorage - elasticSearch_longitude', localStorage.getItem('elasticSearch_longitude') );
+                      _console.log( 'localStorage - elasticSearch_geo_expire', localStorage.getItem('elasticSearch_geo_expire') );
 
                       /**
                        * Run filter again with new coords
@@ -991,8 +996,13 @@
               /**
                * Remember passed coords
                */
-              $.cookie('elasticSearch_latitude', Filter[scope].location.latitude );
-              $.cookie('elasticSearch_longitude', Filter[scope].location.longitude );
+              localStorage.setItem( 'elasticSearch_latitude', Filter[scope].location.latitude );
+              localStorage.setItem( 'elasticSearch_longitude', Filter[scope].location.longitude );
+              localStorage.setItem( 'elasticSearch_geo_expire', Math.round( Date.now()/1000 ) + 30 );
+              
+              _console.log( 'localStorage - elasticSearch_latitude', localStorage.getItem('elasticSearch_latitude') );
+              _console.log( 'localStorage - elasticSearch_longitude', localStorage.getItem('elasticSearch_longitude') );
+              _console.log( 'localStorage - elasticSearch_geo_expire', localStorage.getItem('elasticSearch_geo_expire') );
             }
           },
 
