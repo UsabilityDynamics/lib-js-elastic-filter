@@ -15,9 +15,11 @@
     "js-http-client": "UsabilityDynamics/lib-js-http-client"
   },
   "devDependencies": {
+	"grunt": "*",
+    "grunt-mocha-test": "*",
     "mocha": "*",
+	"jsdom": "*",
     "chai": "*",
-    "jsdom": "*",
     "jquery": "*",
     "knockout": "*"
   }
