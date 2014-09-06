@@ -7,5 +7,12 @@
     "name": "Usability Dynamics",
     "url": "http://UsabilityDynamics.com"
   },
-  "license": "GPL-2.0"
- }
+  "license": "GPL-2.0",
+  "extra": {
+    "component": {
+      "scripts": [
+        "static/jquery.elasticSearch.js"
+      ]
+    }
+  }
+}
