@@ -18,7 +18,7 @@
 	"grunt": "*",
     "grunt-mocha-test": "*",
     "mocha": "*",
-	"jsdom": "*",
+	  "jsdom": "*",
     "chai": "*",
     "jquery": "*",
     "knockout": "*"
