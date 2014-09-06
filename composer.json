@@ -1,11 +1,14 @@
 {
   "name": "usabilitydynamics/lib-js-elastic-filter",
   "version": "3.0.2",
-  "type": "library",
+  "type": "component",
   "description": "Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpRequest client. Supports facets and range filters.",
   "author": {
     "name": "Usability Dynamics",
     "url": "http://UsabilityDynamics.com"
+  },
+  "require": {
+    "robloach/component-installer": "0.0.12"
   },
   "license": "GPL-2.0",
   "extra": {
