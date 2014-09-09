@@ -306,12 +306,6 @@
             this.selector = '#autocompletion';
 
             /**
-             * Elements for result set
-             * @type {string}
-             */
-            this.resultList = '.search-autocomplete-list';
-
-            /**
              * Ability to change query before execution
              */
             this.custom_query = {};
@@ -502,16 +496,9 @@
               viewModel[scope].documents([]);
               $('[data-suggest="'+scope+'"]').val('').keyup().change();
             });
-
             $( Suggest[scope].selector ).on('click', function(e) {
               e.stopPropagation();
             });
-
-            // If resultList exists AND has a "data-state" attribute, we switch it to "ready" now that we're initialized.
-            if( $( Suggest[scope].resultList ).length && $( Suggest[scope].resultList ).attr( 'data-state' ) ) {
-              $( Suggest[scope].resultList ).attr( 'data-state', 'ready' );
-            }
-
           }
 
         },
