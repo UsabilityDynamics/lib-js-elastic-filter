@@ -1,7 +1,7 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
- * @version 3.0.2
+ * @version 3.0.4
  *
  * Copyright 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
@@ -633,12 +633,13 @@
            */
           determinePeriod: function( scope ) {
 
-            var period = { range: {} };
+            var period = {};
 
             switch( this[scope].period ) {
 
               case 'upcoming':
 
+                period = { range: {} };
                 period.range[this[scope].period_field] = {
                    gte:this[scope].middle_timepoint.gte
                 };
@@ -647,6 +648,7 @@
 
               case 'past':
 
+                period = { range: {} };
                 period.range[this[scope].period_field] = {
                    lte:this[scope].middle_timepoint.lte
                 };
