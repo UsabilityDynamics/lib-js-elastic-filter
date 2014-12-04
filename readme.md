@@ -6,6 +6,9 @@ Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpReq
 Changelog
 =========
 
+= Version 3.0.4 =
+* Fix to issue when filtering by ALL
+
 = Version 3.0.3 =
 * Added "resultList" attribute that can have a "data-state" attribute which switches to "ready" once JS is initialized. This allows result list to be hidden while loading.
 
