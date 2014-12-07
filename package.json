@@ -1,6 +1,6 @@
 {
   "name": "lib-js-elastic-filter",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "ElasticSearch filter implementation",
   "private": true,
   "main": "./scripts/jquery.elasticSearch",
@@ -15,10 +15,10 @@
     "js-http-client": "UsabilityDynamics/lib-js-http-client"
   },
   "devDependencies": {
-	"grunt": "*",
+  	"grunt": "*",
     "grunt-mocha-test": "*",
     "mocha": "*",
-	  "jsdom": "*",
+    "jsdom": "*",
     "chai": "*",
     "jquery": "*",
     "knockout": "*"
