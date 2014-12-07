@@ -1,7 +1,7 @@
 {
   "name": "usabilitydynamics/lib-js-elastic-filter",
   "type": "component",
-  "keywords": [ "elasticsearch", "filter", "dynamicfilter" ]
+  "keywords": [ "elasticsearch", "filter", "dynamicfilter" ],
   "description": "Allows to implement ElasticSearch filter. Uses jQuery, KnockoutJS and XMLHttpRequest client. Supports facets and range filters.",
   "author": {
     "name": "Usability Dynamics",
