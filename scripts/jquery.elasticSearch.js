@@ -1,9 +1,9 @@
 /**
  * jQuery ElasticSearch Filter Implementation
  *
- * @version 3.0.4
+ * @version 3.0.5
  *
- * Copyright 2012 Usability Dynamics, Inc. (usabilitydynamics.com)
+ * Copyright 2012-2014 Usability Dynamics, Inc. (usabilitydynamics.com)
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
