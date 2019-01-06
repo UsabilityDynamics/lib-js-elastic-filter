@@ -1,18 +1,18 @@
 {
   "name": "lib-js-elastic-filter",
-  "version": "3.0.5",
+  "version": "3.1.0",
   "description": "ElasticSearch filter implementation",
   "private": true,
   "main": "./scripts/jquery.elasticSearch",
   "repository": {
     "type": "git",
-    "url": "https://github.com/UsabilityDynamics/lib-js-elastic-filter"
+    "url": "https://github.com/udx/lib-js-elastic-filter"
   },
   "engines": {
     "node": ">= 0.10.0"
   },
   "dependencies": {
-    "js-http-client": "UsabilityDynamics/lib-js-http-client"
+    "js-http-client": "udx/lib-js-http-client"
   },
   "devDependencies": {
   	"grunt": "*",
